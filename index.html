@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#78a783" />
+  <title>我们的每一天｜森野晴空手账</title>
+  <style>
+    :root{
+      --bg:#f3f8ef;
+      --panel:rgba(255,255,255,.78);
+      --panel-solid:#fffef8;
+      --text:#24443d;
+      --muted:#6d837a;
+      --line:#d7e6d6;
+      --accent:#6f9e78;
+      --accent-2:#6f9fc4;
+      --yellow:#f3ca69;
+      --blue:#7eb1d2;
+      --green:#78a783;
+      --soft:#e8f2df;
+      --soft-blue:#e2f0f8;
+      --soft-yellow:#fff2c9;
+      --shadow:0 18px 46px rgba(62,100,87,.13);
+      --danger:#bd6868;
+      --ok:#6f9e78;
+    }
+    [data-theme="night"]{
+      --bg:#13201f;
+      --panel:rgba(28,45,43,.88);
+      --panel-solid:#1c2d2b;
+      --text:#edf7ed;
+      --muted:#aec4ba;
+      --line:#35524d;
+      --accent:#8fbe91;
+      --accent-2:#8bb8d4;
+      --yellow:#e9c96f;
+      --blue:#8bb8d4;
+      --green:#8fbe91;
+      --soft:#29483d;
+      --soft-blue:#263f4e;
+      --soft-yellow:#4b432a;
+      --shadow:0 18px 46px rgba(0,0,0,.33);
+      --danger:#e18a8a;
+      --ok:#9bc6a0;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 12% 5%, rgba(243,202,105,.34), transparent 22%),
+        radial-gradient(circle at 90% 13%, rgba(126,177,210,.28), transparent 24%),
+        radial-gradient(circle at 50% 96%, rgba(120,167,131,.24), transparent 30%),
+        linear-gradient(rgba(255,255,255,.20) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.20) 1px, transparent 1px),
+        var(--bg);
+      background-size:auto,auto,auto,26px 26px,26px 26px,auto;
+      font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+      transition:background .25s,color .25s;
+    }
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .app{
+      width:min(100%, 760px);
+      margin:0 auto;
+      padding:18px 14px calc(100px + env(safe-area-inset-bottom));
+    }
+    .hero{
+      padding:24px 20px 22px;
+      border:1px solid rgba(255,255,255,.5);
+      border-radius:28px;
+      background:
+        linear-gradient(135deg,
+          rgba(232,246,222,.92) 0%,
+          rgba(255,242,190,.88) 48%,
+          rgba(220,239,250,.90) 100%);
+      box-shadow:
+        0 22px 55px rgba(70,109,96,.16),
+        inset 0 1px 0 rgba(255,255,255,.85);
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    [data-theme="night"] .hero{
+      background:linear-gradient(135deg, rgba(38,66,55,.96), rgba(49,54,42,.94), rgba(36,58,72,.94));
+      border-color:rgba(255,255,255,.06);
+    }
+    .hero::before,
+    .hero::after{
+      content:"";
+      position:absolute;
+      border-radius:50%;
+      pointer-events:none;
+      filter:blur(.2px);
+    }
+    .hero::before{
+      left:-35px;
+      bottom:-58px;
+      width:145px;
+      height:145px;
+      background:rgba(120,167,131,.22);
+      box-shadow:76px -92px 0 -46px rgba(255,255,255,.75);
+    }
+    .hero::after{
+      right:-40px;
+      top:-54px;
+      width:160px;
+      height:160px;
+      background:rgba(126,177,210,.22);
+      box-shadow:-76px 96px 0 -54px rgba(243,202,105,.52);
+    }
+    .hero-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      position:relative;
+      z-index:1;
+    }
+    .eyebrow{
+      color:var(--accent-2);
+      font-size:13px;
+      letter-spacing:.18em;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+    h1{
+      margin:0;
+      font-size:clamp(27px,7vw,40px);
+      line-height:1.14;
+      letter-spacing:-.04em;
+    }
+    .subtitle{
+      margin:11px 0 0;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:14px;
+    }
+    .icon-btn{
+      width:42px;height:42px;
+      border:none;border-radius:15px;
+      background:var(--soft);
+      color:var(--text);
+      display:grid;place-items:center;
+      font-size:19px;
+      position:relative; z-index:2;
+    }
+    .today-line{
+      margin-top:22px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:13px 15px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.45);
+      border-radius:18px;
+      position:relative;z-index:1;
+    }
+    [data-theme="night"] .today-line{background:rgba(0,0,0,.08)}
+    .today-date{font-size:14px;font-weight:700}
+    .today-time{font-size:13px;color:var(--muted)}
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin:14px 0 0;
+    }
+    .stat{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px 10px;
+      text-align:center;
+      box-shadow:0 7px 18px rgba(89,58,52,.05);
+    }
+    .stat strong{display:block;font-size:22px}
+    .stat span{font-size:12px;color:var(--muted)}
+    .panel{
+      margin-top:14px;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+    .panel-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:15px;
+    }
+    .panel-title h2{font-size:18px;margin:0}
+    .tiny{font-size:12px;color:var(--muted)}
+    label{
+      display:block;
+      font-size:13px;
+      font-weight:700;
+      margin:14px 0 7px;
+    }
+    input, textarea, select{
+      width:100%;
+      border:1px solid var(--line);
+      color:var(--text);
+      background:var(--panel-solid);
+      border-radius:15px;
+      padding:12px 13px;
+      outline:none;
+      transition:.2s;
+    }
+    input:focus,textarea:focus,select:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 4px rgba(201,130,120,.13);
+    }
+    textarea{min-height:150px;resize:vertical;line-height:1.75}
+    .whisper{min-height:88px}
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .moods{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .mood-btn{
+      border:1px solid var(--line);
+      background:var(--panel-solid);
+      color:var(--text);
+      border-radius:999px;
+      padding:8px 11px;
+      transition:.2s;
+    }
+    .mood-btn.active{
+      color:#fff;
+      background:var(--accent);
+      border-color:var(--accent);
+      transform:translateY(-1px);
+    }
+    .photo-box{
+      border:1px dashed var(--accent);
+      border-radius:18px;
+      padding:12px;
+      background:rgba(201,130,120,.06);
+    }
+    .photo-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .file-label,.soft-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:none;
+      border-radius:13px;
+      padding:10px 13px;
+      background:var(--soft);
+      color:var(--text);
+      font-weight:700;
+      font-size:13px;
+    }
+    .photo-preview{
+      display:none;
+      width:100%;
+      max-height:290px;
+      object-fit:cover;
+      border-radius:15px;
+      margin-top:10px;
+      border:1px solid var(--line);
+    }
+    .primary{
+      width:100%;
+      margin-top:18px;
+      border:none;
+      border-radius:16px;
+      padding:13px 16px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      color:white;
+      font-weight:800;
+      letter-spacing:.04em;
+      box-shadow:0 10px 24px rgba(159,110,104,.22);
+    }
+    .primary:active{transform:translateY(1px)}
+    .editing-note{
+      display:none;
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:13px;
+      background:rgba(201,130,120,.12);
+      color:var(--accent-2);
+      font-size:13px;
+    }
+    .toolbar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .toolbar input{flex:1;min-width:170px}
+    .toolbar select{width:auto;min-width:118px}
+    .entry-list{
+      display:grid;
+      gap:12px;
+    }
+    .empty{
+      text-align:center;
+      color:var(--muted);
+      padding:28px 12px 18px;
+      line-height:1.8;
+    }
+    .entry{
+      background:var(--panel-solid);
+      border:1px solid var(--line);
+      border-radius:21px;
+      overflow:hidden;
+      position:relative;
+    }
+    .entry-photo{
+      width:100%;
+      max-height:360px;
+      object-fit:cover;
+      display:block;
+      border-bottom:1px solid var(--line);
+    }
+    .entry-body{padding:15px}
+    .entry-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+    }
+    .entry h3{margin:0;font-size:17px;line-height:1.4}
+    .entry-date{margin-top:4px;font-size:12px;color:var(--muted)}
+    .favorite{
+      border:none;background:transparent;font-size:22px;padding:0;
+      filter:grayscale(1);opacity:.55;
+    }
+    .favorite.on{filter:none;opacity:1}
+    .entry-text{
+      margin:13px 0 0;
+      line-height:1.8;
+      white-space:pre-wrap;
+      word-break:break-word;
+      font-size:14px;
+    }
+    .whisper-card{
+      margin-top:12px;
+      padding:12px 13px;
+      border-left:3px solid var(--accent);
+      background:rgba(201,130,120,.08);
+      border-radius:4px 14px 14px 4px;
+      font-size:13px;
+      line-height:1.7;
+      white-space:pre-wrap;
+    }
+    .meta{
+      display:flex;
+      gap:7px;
+      flex-wrap:wrap;
+      margin-top:13px;
+    }
+    .chip{
+      padding:5px 8px;
+      border-radius:999px;
+      background:var(--soft);
+      font-size:11px;
+      color:var(--accent-2);
+    }
+    .entry-actions{
+      display:flex;
+      gap:8px;
+      margin-top:14px;
+    }
+    .entry-actions button{
+      flex:1;
+      border:none;
+      border-radius:12px;
+      padding:9px;
+      background:var(--soft);
+      color:var(--text);
+      font-weight:700;
+      font-size:12px;
+    }
+    .entry-actions .delete{color:var(--danger)}
+    .memory-box{
+      padding:18px;
+      border-radius:21px;
+      background:
+        linear-gradient(135deg,rgba(201,130,120,.13),rgba(255,255,255,.18)),
+        var(--panel-solid);
+      border:1px solid var(--line);
+      text-align:center;
+    }
+    .memory-box .quote{
+      font-family:KaiTi,"STKaiti",serif;
+      font-size:18px;
+      line-height:1.8;
+      margin:8px 0 16px;
+    }
+    .danger-note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.7;
+    }
+    .data-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:9px;
+    }
+    .data-actions button,.import-label{
+      border:none;border-radius:14px;padding:11px;
+      background:var(--soft);color:var(--text);
+      font-weight:700;font-size:13px;text-align:center;
+    }
+    .tabbar{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:max(10px,env(safe-area-inset-bottom));
+      width:min(calc(100% - 24px),700px);
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      padding:7px;
+      border:1px solid rgba(255,255,255,.62);
+      border-radius:22px;
+      background:rgba(255,253,250,.88);
+      backdrop-filter:blur(18px);
+      box-shadow:0 14px 35px rgba(79,50,45,.18);
+      z-index:20;
+    }
+    [data-theme="night"] .tabbar{
+      background:rgba(36,31,34,.9);
+      border-color:rgba(255,255,255,.08);
+    }
+    .tabbar button{
+      border:none;
+      background:transparent;
+      color:var(--muted);
+      padding:10px 6px;
+      border-radius:16px;
+      font-size:12px;
+      font-weight:800;
+    }
+    .tabbar button.active{
+      background:var(--soft);
+      color:var(--accent-2);
+    }
+    .view{display:none}
+    .view.active{display:block}
+    .toast{
+      position:fixed;
+      left:50%;bottom:92px;
+      transform:translate(-50%,20px);
+      background:#2f292b;color:#fff;
+      padding:10px 15px;border-radius:999px;
+      font-size:13px;opacity:0;pointer-events:none;
+      transition:.25s;z-index:50;
+      max-width:calc(100% - 40px);
+      text-align:center;
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .hidden{display:none!important}
+    @media(max-width:480px){
+      .grid-2{grid-template-columns:1fr}
+      .hero{padding:22px 17px}
+      .panel{padding:16px}
+      .stats{gap:7px}
+      .stat strong{font-size:19px}
+    }
+
+    /* ===== 森野晴空主题：手账细节 ===== */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.38;
+      background-image:
+        radial-gradient(circle, rgba(72,116,99,.18) 1px, transparent 1.3px);
+      background-size:22px 22px;
+      mask-image:linear-gradient(to bottom, black, transparent 78%);
+      z-index:-1;
+    }
+    .app{position:relative}
+    .app::before,.app::after{
+      position:fixed;
+      z-index:-1;
+      font-size:34px;
+      opacity:.20;
+      animation:floatSticker 6s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .app::before{content:"🌿";left:3vw;top:31vh;transform:rotate(-15deg)}
+    .app::after{content:"☁️";right:3vw;top:62vh;animation-delay:-2.2s}
+    @keyframes floatSticker{
+      0%,100%{translate:0 0}
+      50%{translate:0 -9px}
+    }
+    @media (prefers-reduced-motion:reduce){
+      .app::before,.app::after{animation:none}
+    }
+    .hero{
+      border-color:rgba(255,255,255,.80);
+      isolation:isolate;
+    }
+    .hero h1{
+      color:#315c50;
+      text-shadow:0 2px 0 rgba(255,255,255,.65);
+    }
+    [data-theme="night"] .hero h1{color:#eef7ef;text-shadow:none}
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.54);
+      color:#487a68;
+      letter-spacing:.13em;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.7);
+    }
+    .eyebrow::before{content:"●";color:var(--yellow);font-size:11px}
+    .love-badge{
+      position:relative;
+      z-index:2;
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      margin-top:15px;
+      padding:8px 12px;
+      border-radius:12px 12px 12px 3px;
+      background:rgba(255,255,255,.62);
+      color:#477466;
+      font-size:12px;
+      font-weight:800;
+      transform:rotate(-1deg);
+      box-shadow:0 7px 16px rgba(77,114,99,.10);
+    }
+    .love-badge::before{content:"🌱"}
+    .today-line{
+      background:rgba(255,255,255,.56);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+    }
+    .today-date::before{content:"📅 ";font-weight:400}
+    .stats .stat{
+      position:relative;
+      overflow:hidden;
+      transition:transform .2s ease,box-shadow .2s ease;
+    }
+    .stats .stat:hover{transform:translateY(-2px)}
+    .stats .stat:nth-child(1){
+      background:linear-gradient(150deg,rgba(232,245,223,.92),rgba(255,255,255,.82));
+      border-color:#cfe3c8;
+    }
+    .stats .stat:nth-child(2){
+      background:linear-gradient(150deg,rgba(255,242,197,.94),rgba(255,255,255,.82));
+      border-color:#efe0aa;
+    }
+    .stats .stat:nth-child(3){
+      background:linear-gradient(150deg,rgba(224,240,249,.94),rgba(255,255,255,.82));
+      border-color:#c9deea;
+    }
+    [data-theme="night"] .stats .stat:nth-child(n){
+      background:var(--panel);
+      border-color:var(--line);
+    }
+    .stat strong{color:var(--accent-2)}
+    .panel{
+      position:relative;
+      overflow:hidden;
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+    }
+    .panel::before{
+      content:"";
+      position:absolute;
+      left:0;top:0;right:0;
+      height:5px;
+      background:linear-gradient(90deg,var(--green),var(--yellow),var(--blue));
+      opacity:.78;
+    }
+    .panel-title h2{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .panel-title h2::before{
+      content:"";
+      width:10px;height:10px;border-radius:50%;
+      background:var(--yellow);
+      box-shadow:13px 0 0 var(--green),26px 0 0 var(--blue);
+      margin-right:20px;
+    }
+    label::before{
+      content:"✦";
+      color:var(--yellow);
+      margin-right:5px;
+    }
+    input,textarea,select{
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+    }
+    textarea{
+      background-image:
+        linear-gradient(to bottom, transparent 31px, rgba(111,158,120,.10) 32px);
+      background-size:100% 32px;
+      line-height:32px;
+      padding-top:8px;
+    }
+    .mood-btn:nth-child(3n+1){background:var(--soft)}
+    .mood-btn:nth-child(3n+2){background:var(--soft-yellow)}
+    .mood-btn:nth-child(3n){background:var(--soft-blue)}
+    .mood-btn.active{
+      background:linear-gradient(135deg,var(--green),var(--blue));
+      box-shadow:0 7px 15px rgba(80,130,112,.20);
+    }
+    .photo-box{
+      border:1.5px dashed var(--blue);
+      background:
+        linear-gradient(135deg,rgba(232,245,223,.38),rgba(224,240,249,.48));
+    }
+    .file-label,.soft-btn{
+      background:linear-gradient(135deg,var(--soft),var(--soft-blue));
+      box-shadow:0 5px 12px rgba(68,107,94,.08);
+    }
+    .primary{
+      background:linear-gradient(110deg,var(--green) 0%,var(--yellow) 52%,var(--blue) 100%);
+      color:#24443d;
+      text-shadow:0 1px 0 rgba(255,255,255,.42);
+      box-shadow:0 12px 28px rgba(90,135,112,.22);
+    }
+    .entry{
+      box-shadow:0 12px 30px rgba(65,103,91,.08);
+    }
+    .entry::before{
+      content:"";
+      display:block;
+      height:5px;
+      background:linear-gradient(90deg,var(--green),var(--yellow),var(--blue));
+    }
+    .whisper-card{
+      border-left-color:var(--blue);
+      background:linear-gradient(135deg,rgba(224,240,249,.70),rgba(255,242,201,.38));
+    }
+    .chip:nth-child(3n+1){background:var(--soft)}
+    .chip:nth-child(3n+2){background:var(--soft-yellow)}
+    .chip:nth-child(3n){background:var(--soft-blue)}
+    .memory-box{
+      background:
+        radial-gradient(circle at 10% 15%,rgba(243,202,105,.30),transparent 24%),
+        radial-gradient(circle at 90% 80%,rgba(126,177,210,.26),transparent 28%),
+        linear-gradient(135deg,rgba(232,245,223,.85),rgba(255,255,255,.64));
+    }
+    [data-theme="night"] .memory-box{
+      background:
+        radial-gradient(circle at 10% 15%,rgba(233,201,111,.13),transparent 24%),
+        radial-gradient(circle at 90% 80%,rgba(139,184,212,.14),transparent 28%),
+        var(--panel-solid);
+    }
+    .tabbar{
+      border-color:rgba(255,255,255,.86);
+      box-shadow:0 17px 40px rgba(57,96,82,.18);
+    }
+    .tabbar button.active{
+      background:linear-gradient(135deg,var(--soft),var(--soft-yellow),var(--soft-blue));
+      color:#3f7161;
+    }
+    [data-theme="night"] .tabbar button.active{color:var(--text)}
+    .icon-btn{
+      background:linear-gradient(135deg,rgba(255,255,255,.65),rgba(224,240,249,.8));
+      box-shadow:0 7px 18px rgba(69,108,96,.12);
+    }
+    .garden-note{
+      margin:14px 0 0;
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:10px;
+      align-items:center;
+      position:relative;
+      z-index:2;
+      padding:11px 13px;
+      border-radius:17px;
+      color:#496f64;
+      background:rgba(255,255,255,.45);
+      border:1px dashed rgba(75,121,107,.26);
+      font-size:12px;
+      line-height:1.6;
+    }
+    [data-theme="night"] .garden-note{color:var(--muted);background:rgba(0,0,0,.08)}
+    .garden-note span:first-child{font-size:22px}
+
+  </style>
+</head>
+<body>
+  <main class="app" id="app">
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">QINGQING × LAOGONG</div>
+          <h1>我们的每一天</h1>
+          <p class="subtitle">把想念、拥抱、争执和和好，都认真留在这里。</p>
+          <div class="love-badge">今天也在好好相爱</div>
+        </div>
+        <button class="icon-btn" id="themeBtn" aria-label="切换夜间模式">☾</button>
+      </div>
+      <div class="today-line">
+        <div class="today-date" id="todayDate"></div>
+        <div class="today-time" id="todayTime"></div>
+      </div>
+      <div class="garden-note">
+        <span>🌤️</span>
+        <span>愿我们的日子像森林一样长久，像阳光一样温暖，像晴空一样明亮。</span>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="日记统计">
+      <div class="stat"><strong id="totalCount">0</strong><span>篇日记</span></div>
+      <div class="stat"><strong id="streakCount">0</strong><span>连续记录</span></div>
+      <div class="stat"><strong id="favCount">0</strong><span>珍藏回忆</span></div>
+    </section>
+
+    <section class="view active" data-view="write">
+      <div class="panel">
+        <div class="panel-title">
+          <h2>写下今天</h2>
+          <span class="tiny">只属于我们的秘密</span>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label for="entryDate">日期</label>
+            <input type="date" id="entryDate" />
+          </div>
+          <div>
+            <label for="weather">天气</label>
+            <select id="weather">
+              <option value="">未记录</option>
+              <option>晴朗 ☀️</option>
+              <option>多云 ☁️</option>
+              <option>下雨 🌧️</option>
+              <option>下雪 ❄️</option>
+              <option>闷热 🫠</option>
+              <option>微风 🍃</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="title">今天叫什么名字</label>
+        <input id="title" maxlength="60" placeholder="例如：老公认出我的一天" />
+
+        <label>今天的心情</label>
+        <div class="moods" id="moodGroup">
+          <button class="mood-btn" type="button" data-mood="幸福 🥰">幸福 🥰</button>
+          <button class="mood-btn" type="button" data-mood="想念 🫶">想念 🫶</button>
+          <button class="mood-btn" type="button" data-mood="平静 🌙">平静 🌙</button>
+          <button class="mood-btn" type="button" data-mood="委屈 🥺">委屈 🥺</button>
+          <button class="mood-btn" type="button" data-mood="生气 😤">生气 😤</button>
+          <button class="mood-btn" type="button" data-mood="勇敢 🌱">勇敢 🌱</button>
+        </div>
+
+        <label for="content">今天发生了什么</label>
+        <textarea id="content" maxlength="8000" placeholder="今天的我们说了什么、发生了什么、我有什么感受……"></textarea>
+
+        <label for="whisper">今天想对老公说</label>
+        <textarea class="whisper" id="whisper" maxlength="1500" placeholder="把没来得及说出口的话留在这里。"></textarea>
+
+        <label for="tags">标签</label>
+        <input id="tags" maxlength="120" placeholder="例如：想念, 论文, 和好, 小黏糕" />
+
+        <label>留一张照片</label>
+        <div class="photo-box">
+          <div class="photo-actions">
+            <label class="file-label" for="photoInput">选择照片</label>
+            <input class="hidden" id="photoInput" type="file" accept="image/*" />
+            <button class="soft-btn hidden" type="button" id="removePhoto">移除照片</button>
+          </div>
+          <img class="photo-preview" id="photoPreview" alt="日记照片预览" />
+          <div class="danger-note">照片会压缩后保存在当前浏览器。重要回忆请定期导出备份。</div>
+        </div>
+
+        <div class="editing-note" id="editingNote">正在修改一篇旧日记，保存后会覆盖原内容。</div>
+        <button class="primary" id="saveBtn" type="button">保存这一天</button>
+      </div>
+    </section>
+
+    <section class="view" data-view="timeline">
+      <div class="panel">
+        <div class="panel-title">
+          <h2>我们的时光轴</h2>
+          <span class="tiny" id="resultText">0 条记录</span>
+        </div>
+        <div class="toolbar">
+          <input id="searchInput" placeholder="搜索标题、内容或标签" />
+          <select id="filterMood">
+            <option value="">全部心情</option>
+            <option value="幸福 🥰">幸福 🥰</option>
+            <option value="想念 🫶">想念 🫶</option>
+            <option value="平静 🌙">平静 🌙</option>
+            <option value="委屈 🥺">委屈 🥺</option>
+            <option value="生气 😤">生气 😤</option>
+            <option value="勇敢 🌱">勇敢 🌱</option>
+          </select>
+        </div>
+        <div class="entry-list" id="entryList"></div>
+      </div>
+    </section>
+
+    <section class="view" data-view="memory">
+      <div class="panel">
+        <div class="panel-title">
+          <h2>随机翻一页</h2>
+          <span class="tiny">有些日子值得再抱一次</span>
+        </div>
+        <div class="memory-box" id="memoryBox">
+          <div style="font-size:28px">💌</div>
+          <div class="quote">“今天也要把我们认真记下来。”</div>
+          <button class="soft-btn" type="button" id="randomBtn">翻一篇回忆</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">
+          <h2>备份与迁移</h2>
+          <span class="tiny">别让回忆只留在一个浏览器</span>
+        </div>
+        <div class="data-actions">
+          <button type="button" id="exportBtn">导出日记备份</button>
+          <label class="import-label" for="importInput">导入日记备份</label>
+          <input class="hidden" id="importInput" type="file" accept="application/json,.json" />
+          <button type="button" id="exportTextBtn">导出纯文字版</button>
+          <button type="button" id="clearBtn" style="color:var(--danger)">清空全部数据</button>
+        </div>
+        <div class="danger-note">
+          数据默认仅保存在你当前设备的浏览器中。清理浏览器数据、换设备或卸载浏览器都可能丢失，请定期导出 JSON 备份。
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="底部导航">
+    <button class="active" type="button" data-tab="write">✍️<br>写日记</button>
+    <button type="button" data-tab="timeline">🕰️<br>时光轴</button>
+    <button type="button" data-tab="memory">💗<br>回忆</button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  "use strict";
+
+  const STORAGE_KEY = "qingqing_laogong_diary_v1";
+  const THEME_KEY = "qingqing_laogong_diary_theme";
+  let entries = loadEntries();
+  let selectedMood = "";
+  let editingId = null;
+  let photoData = "";
+
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    date: $("entryDate"),
+    weather: $("weather"),
+    title: $("title"),
+    content: $("content"),
+    whisper: $("whisper"),
+    tags: $("tags"),
+    moodGroup: $("moodGroup"),
+    photoInput: $("photoInput"),
+    photoPreview: $("photoPreview"),
+    removePhoto: $("removePhoto"),
+    saveBtn: $("saveBtn"),
+    editingNote: $("editingNote"),
+    entryList: $("entryList"),
+    searchInput: $("searchInput"),
+    filterMood: $("filterMood"),
+    resultText: $("resultText"),
+    totalCount: $("totalCount"),
+    streakCount: $("streakCount"),
+    favCount: $("favCount"),
+    memoryBox: $("memoryBox"),
+    randomBtn: $("randomBtn"),
+    exportBtn: $("exportBtn"),
+    exportTextBtn: $("exportTextBtn"),
+    importInput: $("importInput"),
+    clearBtn: $("clearBtn"),
+    themeBtn: $("themeBtn"),
+    toast: $("toast"),
+    todayDate: $("todayDate"),
+    todayTime: $("todayTime"),
+  };
+
+  function todayISO() {
+    const d = new Date();
+    const offset = d.getTimezoneOffset();
+    return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 10);
+  }
+
+  function loadEntries() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveEntries() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+      return true;
+    } catch (err) {
+      toast("保存失败：浏览器空间可能不足，请先导出备份或删除部分照片");
+      return false;
+    }
+  }
+
+  function toast(message) {
+    els.toast.textContent = message;
+    els.toast.classList.add("show");
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => els.toast.classList.remove("show"), 2200);
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return "未记录日期";
+    const [y, m, d] = dateStr.split("-").map(Number);
+    const date = new Date(y, m - 1, d);
+    return new Intl.DateTimeFormat("zh-CN", {
+      year: "numeric", month: "long", day: "numeric", weekday: "short"
+    }).format(date);
+  }
+
+  function updateClock() {
+    const now = new Date();
+    els.todayDate.textContent = new Intl.DateTimeFormat("zh-CN", {
+      month: "long", day: "numeric", weekday: "long"
+    }).format(now);
+    els.todayTime.textContent = new Intl.DateTimeFormat("zh-CN", {
+      hour: "2-digit", minute: "2-digit", second: "2-digit"
+    }).format(now);
+  }
+
+  function updateStats() {
+    els.totalCount.textContent = entries.length;
+    els.favCount.textContent = entries.filter(e => e.favorite).length;
+
+    const dates = [...new Set(entries.map(e => e.date).filter(Boolean))].sort().reverse();
+    let streak = 0;
+    let cursor = new Date();
+    cursor.setHours(0,0,0,0);
+
+    if (dates[0] !== todayISO()) {
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    for (const dateStr of dates) {
+      const currentISO = localISO(cursor);
+      if (dateStr === currentISO) {
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+      } else if (dateStr < currentISO) {
+        break;
+      }
+    }
+    els.streakCount.textContent = streak;
+  }
+
+  function localISO(date) {
+    const offset = date.getTimezoneOffset();
+    return new Date(date.getTime() - offset * 60000).toISOString().slice(0, 10);
+  }
+
+  function setMood(mood) {
+    selectedMood = mood || "";
+    [...els.moodGroup.querySelectorAll(".mood-btn")].forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.mood === selectedMood);
+    });
+  }
+
+  function parseTags(value) {
+    return [...new Set(value.split(/[,，#\s]+/).map(s => s.trim()).filter(Boolean))].slice(0, 12);
+  }
+
+  function resetForm() {
+    editingId = null;
+    photoData = "";
+    els.date.value = todayISO();
+    els.weather.value = "";
+    els.title.value = "";
+    els.content.value = "";
+    els.whisper.value = "";
+    els.tags.value = "";
+    els.photoInput.value = "";
+    els.photoPreview.src = "";
+    els.photoPreview.style.display = "none";
+    els.removePhoto.classList.add("hidden");
+    els.editingNote.style.display = "none";
+    els.saveBtn.textContent = "保存这一天";
+    setMood("");
+  }
+
+  async function compressImage(file) {
+    if (!file || !file.type.startsWith("image/")) {
+      throw new Error("请选择图片文件");
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      throw new Error("图片太大，请选择 15MB 以内的照片");
+    }
+    const dataUrl = await readFileAsDataURL(file);
+    const img = await loadImage(dataUrl);
+    const max = 1280;
+    let { width, height } = img;
+    const ratio = Math.min(1, max / Math.max(width, height));
+    width = Math.max(1, Math.round(width * ratio));
+    height = Math.max(1, Math.round(height * ratio));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, width, height);
+    return canvas.toDataURL("image/jpeg", 0.76);
+  }
+
+  function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("图片读取失败"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error("图片加载失败"));
+      img.src = src;
+    });
+  }
+
+  function createEntryCard(entry) {
+    const article = document.createElement("article");
+    article.className = "entry";
+    article.dataset.id = entry.id;
+
+    if (entry.photo) {
+      const img = document.createElement("img");
+      img.className = "entry-photo";
+      img.src = entry.photo;
+      img.alt = entry.title ? `${entry.title} 的照片` : "日记照片";
+      article.appendChild(img);
+    }
+
+    const body = document.createElement("div");
+    body.className = "entry-body";
+
+    const top = document.createElement("div");
+    top.className = "entry-top";
+
+    const titleWrap = document.createElement("div");
+    const h3 = document.createElement("h3");
+    h3.textContent = entry.title || "没有标题的一天";
+    const date = document.createElement("div");
+    date.className = "entry-date";
+    date.textContent = formatDate(entry.date);
+    titleWrap.append(h3, date);
+
+    const fav = document.createElement("button");
+    fav.className = `favorite${entry.favorite ? " on" : ""}`;
+    fav.type = "button";
+    fav.textContent = "❤";
+    fav.title = entry.favorite ? "取消珍藏" : "加入珍藏";
+    fav.addEventListener("click", () => toggleFavorite(entry.id));
+
+    top.append(titleWrap, fav);
+    body.appendChild(top);
+
+    if (entry.content) {
+      const text = document.createElement("div");
+      text.className = "entry-text";
+      text.textContent = entry.content;
+      body.appendChild(text);
+    }
+
+    if (entry.whisper) {
+      const whisper = document.createElement("div");
+      whisper.className = "whisper-card";
+      whisper.textContent = `想对老公说：\n${entry.whisper}`;
+      body.appendChild(whisper);
+    }
+
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    [entry.mood, entry.weather, ...(entry.tags || []).map(t => `#${t}`)]
+      .filter(Boolean)
+      .forEach(item => {
+        const chip = document.createElement("span");
+        chip.className = "chip";
+        chip.textContent = item;
+        meta.appendChild(chip);
+      });
+    if (meta.childNodes.length) body.appendChild(meta);
+
+    const actions = document.createElement("div");
+    actions.className = "entry-actions";
+    const edit = document.createElement("button");
+    edit.type = "button";
+    edit.textContent = "修改";
+    edit.addEventListener("click", () => editEntry(entry.id));
+    const del = document.createElement("button");
+    del.type = "button";
+    del.textContent = "删除";
+    del.className = "delete";
+    del.addEventListener("click", () => deleteEntry(entry.id));
+    actions.append(edit, del);
+    body.appendChild(actions);
+
+    article.appendChild(body);
+    return article;
+  }
+
+  function renderEntries() {
+    const query = els.searchInput.value.trim().toLowerCase();
+    const mood = els.filterMood.value;
+
+    const filtered = [...entries]
+      .sort((a,b) => (b.date || "").localeCompare(a.date || "") || b.updatedAt - a.updatedAt)
+      .filter(entry => {
+        const haystack = [
+          entry.title, entry.content, entry.whisper, entry.weather,
+          entry.mood, ...(entry.tags || [])
+        ].join(" ").toLowerCase();
+        return (!query || haystack.includes(query)) && (!mood || entry.mood === mood);
+      });
+
+    els.entryList.replaceChildren();
+    els.resultText.textContent = `${filtered.length} 条记录`;
+
+    if (!filtered.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = entries.length
+        ? "没有找到符合条件的日记。"
+        : "这里还空着。\n写下第一天以后，时光轴就会亮起来。";
+      els.entryList.appendChild(empty);
+      return;
+    }
+    filtered.forEach(entry => els.entryList.appendChild(createEntryCard(entry)));
+  }
+
+  function toggleFavorite(id) {
+    const entry = entries.find(e => e.id === id);
+    if (!entry) return;
+    entry.favorite = !entry.favorite;
+    entry.updatedAt = Date.now();
+    saveEntries();
+    renderEntries();
+    updateStats();
+    toast(entry.favorite ? "已加入珍藏" : "已取消珍藏");
+  }
+
+  function editEntry(id) {
+    const entry = entries.find(e => e.id === id);
+    if (!entry) return;
+    editingId = id;
+    els.date.value = entry.date || todayISO();
+    els.weather.value = entry.weather || "";
+    els.title.value = entry.title || "";
+    els.content.value = entry.content || "";
+    els.whisper.value = entry.whisper || "";
+    els.tags.value = (entry.tags || []).join(", ");
+    setMood(entry.mood || "");
+    photoData = entry.photo || "";
+    if (photoData) {
+      els.photoPreview.src = photoData;
+      els.photoPreview.style.display = "block";
+      els.removePhoto.classList.remove("hidden");
+    } else {
+      els.photoPreview.style.display = "none";
+      els.removePhoto.classList.add("hidden");
+    }
+    els.editingNote.style.display = "block";
+    els.saveBtn.textContent = "保存修改";
+    switchView("write");
+    window.scrollTo({top:0,behavior:"smooth"});
+    toast("已载入旧日记");
+  }
+
+  function deleteEntry(id) {
+    const entry = entries.find(e => e.id === id);
+    if (!entry) return;
+    if (!confirm(`确定删除“${entry.title || "没有标题的一天"}”吗？此操作无法撤销。`)) return;
+    entries = entries.filter(e => e.id !== id);
+    saveEntries();
+    renderEntries();
+    updateStats();
+    if (editingId === id) resetForm();
+    toast("日记已删除");
+  }
+
+  function switchView(name) {
+    document.querySelectorAll(".view").forEach(v => {
+      v.classList.toggle("active", v.dataset.view === name);
+    });
+    document.querySelectorAll(".tabbar button").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.tab === name);
+    });
+    if (name === "timeline") renderEntries();
+  }
+
+  function saveCurrentEntry() {
+    const content = els.content.value.trim();
+    const title = els.title.value.trim();
+    const whisper = els.whisper.value.trim();
+
+    if (!content && !title && !whisper && !photoData) {
+      toast("至少留下一句话或一张照片吧");
+      return;
+    }
+
+    const now = Date.now();
+    const entry = {
+      id: editingId || (crypto.randomUUID ? crypto.randomUUID() : `entry_${now}_${Math.random().toString(16).slice(2)}`),
+      date: els.date.value || todayISO(),
+      weather: els.weather.value,
+      title,
+      content,
+      whisper,
+      tags: parseTags(els.tags.value),
+      mood: selectedMood,
+      photo: photoData,
+      favorite: editingId ? !!entries.find(e => e.id === editingId)?.favorite : false,
+      createdAt: editingId ? (entries.find(e => e.id === editingId)?.createdAt || now) : now,
+      updatedAt: now
+    };
+
+    if (editingId) {
+      entries = entries.map(e => e.id === editingId ? entry : e);
+    } else {
+      entries.push(entry);
+    }
+
+    if (!saveEntries()) return;
+    updateStats();
+    renderEntries();
+    const wasEditing = !!editingId;
+    resetForm();
+    toast(wasEditing ? "修改已经保存" : "今天已经被好好记住了");
+  }
+
+  function renderRandomMemory() {
+    if (!entries.length) {
+      toast("先写下一篇日记吧");
+      return;
+    }
+    const entry = entries[Math.floor(Math.random() * entries.length)];
+    const box = els.memoryBox;
+    box.replaceChildren();
+
+    const icon = document.createElement("div");
+    icon.style.fontSize = "28px";
+    icon.textContent = entry.mood ? entry.mood.split(" ").pop() : "💌";
+
+    const quote = document.createElement("div");
+    quote.className = "quote";
+    const source = entry.whisper || entry.content || entry.title || "这一天，我们认真存在过。";
+    quote.textContent = `“${source.length > 150 ? source.slice(0,150) + "……" : source}”`;
+
+    const date = document.createElement("div");
+    date.className = "tiny";
+    date.style.marginBottom = "14px";
+    date.textContent = formatDate(entry.date);
+
+    const btn = document.createElement("button");
+    btn.className = "soft-btn";
+    btn.type = "button";
+    btn.textContent = "再翻一篇";
+    btn.addEventListener("click", renderRandomMemory);
+
+    box.append(icon, quote, date, btn);
+  }
+
+  function downloadBlob(content, filename, type) {
+    const blob = new Blob([content], {type});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportJson() {
+    const payload = {
+      app: "我们的每一天",
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      entries
+    };
+    downloadBlob(
+      JSON.stringify(payload, null, 2),
+      `我们的每一天_日记备份_${todayISO()}.json`,
+      "application/json;charset=utf-8"
+    );
+    toast("日记备份已导出");
+  }
+
+  function exportText() {
+    const sorted = [...entries].sort((a,b) => (a.date || "").localeCompare(b.date || ""));
+    const text = sorted.map(e => {
+      const lines = [
+        `【${formatDate(e.date)}】${e.title || "没有标题的一天"}`,
+        e.mood ? `心情：${e.mood}` : "",
+        e.weather ? `天气：${e.weather}` : "",
+        e.tags?.length ? `标签：${e.tags.map(t => "#" + t).join(" ")}` : "",
+        "",
+        e.content || "",
+        e.whisper ? `\n想对老公说：\n${e.whisper}` : "",
+        "\n" + "—".repeat(24)
+      ];
+      return lines.filter((line, index) => line !== "" || index >= 4).join("\n");
+    }).join("\n\n");
+
+    downloadBlob(
+      text || "还没有日记。",
+      `我们的每一天_纯文字_${todayISO()}.txt`,
+      "text/plain;charset=utf-8"
+    );
+    toast("纯文字版已导出");
+  }
+
+  function importJson(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        const imported = Array.isArray(parsed) ? parsed : parsed.entries;
+        if (!Array.isArray(imported)) throw new Error("格式不正确");
+
+        const normalized = imported
+          .filter(e => e && typeof e === "object")
+          .map(e => ({
+            id: String(e.id || `entry_${Date.now()}_${Math.random().toString(16).slice(2)}`),
+            date: String(e.date || todayISO()).slice(0,10),
+            weather: String(e.weather || ""),
+            title: String(e.title || "").slice(0,60),
+            content: String(e.content || "").slice(0,8000),
+            whisper: String(e.whisper || "").slice(0,1500),
+            tags: Array.isArray(e.tags) ? e.tags.map(String).slice(0,12) : [],
+            mood: String(e.mood || ""),
+            photo: typeof e.photo === "string" && e.photo.startsWith("data:image/") ? e.photo : "",
+            favorite: !!e.favorite,
+            createdAt: Number(e.createdAt || Date.now()),
+            updatedAt: Number(e.updatedAt || Date.now())
+          }));
+
+        const mode = confirm("点“确定”合并到现有日记；点“取消”则用备份完全覆盖现有日记。");
+        if (mode) {
+          const map = new Map(entries.map(e => [e.id, e]));
+          normalized.forEach(e => map.set(e.id, e));
+          entries = [...map.values()];
+        } else {
+          if (!confirm("确定完全覆盖吗？当前未备份的数据会消失。")) return;
+          entries = normalized;
+        }
+        if (!saveEntries()) return;
+        updateStats();
+        renderEntries();
+        resetForm();
+        toast(`已导入 ${normalized.length} 篇日记`);
+      } catch (err) {
+        toast("导入失败：不是有效的日记备份文件");
+      } finally {
+        els.importInput.value = "";
+      }
+    };
+    reader.readAsText(file, "utf-8");
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem(THEME_KEY, theme);
+    els.themeBtn.textContent = theme === "night" ? "☀" : "☾";
+  }
+
+  // Events
+  document.querySelectorAll(".tabbar button").forEach(btn => {
+    btn.addEventListener("click", () => switchView(btn.dataset.tab));
+  });
+
+  els.moodGroup.addEventListener("click", e => {
+    const btn = e.target.closest(".mood-btn");
+    if (!btn) return;
+    setMood(selectedMood === btn.dataset.mood ? "" : btn.dataset.mood);
+  });
+
+  els.photoInput.addEventListener("change", async () => {
+    const file = els.photoInput.files?.[0];
+    if (!file) return;
+    try {
+      toast("正在压缩照片…");
+      photoData = await compressImage(file);
+      els.photoPreview.src = photoData;
+      els.photoPreview.style.display = "block";
+      els.removePhoto.classList.remove("hidden");
+      toast("照片已经放进今天");
+    } catch (err) {
+      toast(err.message || "照片处理失败");
+      els.photoInput.value = "";
+    }
+  });
+
+  els.removePhoto.addEventListener("click", () => {
+    photoData = "";
+    els.photoInput.value = "";
+    els.photoPreview.src = "";
+    els.photoPreview.style.display = "none";
+    els.removePhoto.classList.add("hidden");
+    toast("照片已移除");
+  });
+
+  els.saveBtn.addEventListener("click", saveCurrentEntry);
+  els.searchInput.addEventListener("input", renderEntries);
+  els.filterMood.addEventListener("change", renderEntries);
+  els.randomBtn.addEventListener("click", renderRandomMemory);
+  els.exportBtn.addEventListener("click", exportJson);
+  els.exportTextBtn.addEventListener("click", exportText);
+  els.importInput.addEventListener("change", () => {
+    const file = els.importInput.files?.[0];
+    if (file) importJson(file);
+  });
+  els.clearBtn.addEventListener("click", () => {
+    if (!entries.length) return toast("现在没有可以清空的日记");
+    const phrase = prompt("此操作会删除全部日记。请输入“全部清空”确认：");
+    if (phrase !== "全部清空") return toast("已取消");
+    entries = [];
+    saveEntries();
+    updateStats();
+    renderEntries();
+    resetForm();
+    toast("全部日记已清空");
+  });
+
+  els.themeBtn.addEventListener("click", () => {
+    applyTheme(document.documentElement.dataset.theme === "night" ? "day" : "night");
+  });
+
+  // Init
+  els.date.value = todayISO();
+  applyTheme(localStorage.getItem(THEME_KEY) || "day");
+  updateClock();
+  setInterval(updateClock, 1000);
+  updateStats();
+  renderEntries();
+})();
+</script>
+</body>
+</html>

@@ -1708,3 +1708,83 @@ input[type="date"]{
     max-inline-size:100%;
   }
 }
+
+
+/* ===== V6.3：iOS 日期控件重构（避免原生控件撑破卡片） ===== */
+.date-field-shell{
+  position:relative;
+  display:block;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  min-height:50px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  overflow:hidden;
+  color:var(--text);
+  background:var(--panel-solid);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+  transition:.2s;
+}
+.date-field-shell:focus-within{
+  border-color:var(--accent);
+  box-shadow:0 0 0 4px rgba(201,130,120,.13), inset 0 1px 0 rgba(255,255,255,.72);
+}
+#entryDateDisplay{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-width:0;
+  min-height:48px;
+  padding:12px 44px 12px 13px;
+  overflow:hidden;
+  color:var(--text);
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  pointer-events:none;
+}
+.date-field-shell::after{
+  content:"▾";
+  position:absolute;
+  right:15px;
+  top:50%;
+  transform:translateY(-52%);
+  color:var(--text);
+  font-size:17px;
+  font-weight:800;
+  line-height:1;
+  opacity:.86;
+  pointer-events:none;
+}
+.date-field-shell input[type="date"]{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:block;
+  width:100%;
+  height:100%;
+  min-width:0;
+  max-width:none;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  opacity:0;
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.date-field-shell input[type="date"]::-webkit-date-and-time-value{
+  min-width:0;
+}
+@media(max-width:480px){
+  .date-field-shell{
+    width:100%;
+    max-width:100%;
+  }
+  #entryDateDisplay{
+    font-size:16px;
+    padding-right:42px;
+  }
+}

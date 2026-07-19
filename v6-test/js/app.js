@@ -83,6 +83,7 @@
   const $ = (id) => document.getElementById(id);
   const els = {
     date: $("entryDate"),
+    dateDisplay: $("entryDateDisplay"),
     weather: $("weather"),
     title: $("title"),
     content: $("content"),
@@ -146,6 +147,23 @@
     const d = new Date();
     const offset = d.getTimezoneOffset();
     return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 10);
+  }
+
+  function formatEntryDate(dateStr) {
+    if (!dateStr) return "请选择日期";
+    const [year, month, day] = dateStr.split("-").map(Number);
+    if (!year || !month || !day) return dateStr;
+    return `${year}年${month}月${day}日`;
+  }
+
+  function updateEntryDateDisplay() {
+    if (!els.dateDisplay) return;
+    els.dateDisplay.textContent = formatEntryDate(els.date.value);
+  }
+
+  function setEntryDate(value) {
+    els.date.value = value || todayISO();
+    updateEntryDateDisplay();
   }
 
   function saveEntries() {
@@ -250,7 +268,7 @@
   function resetForm() {
     editingId = null;
     photosData = [];
-    els.date.value = todayISO();
+    setEntryDate(todayISO());
     els.weather.value = "";
     els.title.value = "";
     els.content.value = "";
@@ -514,7 +532,7 @@
     const entry = entries.find(e => e.id === id);
     if (!entry) return;
     editingId = id;
-    els.date.value = entry.date || todayISO();
+    setEntryDate(entry.date || todayISO());
     els.weather.value = entry.weather || "";
     els.title.value = entry.title || "";
     els.content.value = entry.content || "";
@@ -1329,8 +1347,11 @@
     applyTheme(document.documentElement.dataset.theme === "night" ? "day" : "night");
   });
 
+  els.date.addEventListener("input", updateEntryDateDisplay);
+  els.date.addEventListener("change", updateEntryDateDisplay);
+
   // Init
-  els.date.value = todayISO();
+  setEntryDate(todayISO());
   renderPhotoEditor();
   applyAvatarImages();
   setChatSender("qingqing");

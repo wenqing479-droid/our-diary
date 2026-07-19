@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#78a783" />
   <title>我们的每一天｜青青与老公的森野小屋</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles.css?v=63" />
   <link rel="icon" type="image/png" href="assets/apples/apple-dew.png" />
 </head>
 <body>
@@ -19,7 +19,13 @@
           <p class="subtitle">这里收藏我们的每一天，也留着青青和老公说过的话。</p>
           <div class="love-badge">今天也在好好相爱</div>
         </div>
-        <button class="icon-btn" id="themeBtn" aria-label="切换夜间模式">☾</button>
+        <div class="hero-actions">
+          <button class="cloud-account-btn" id="cloudAccountBtn" type="button" aria-label="打开云端账户">
+            <span class="cloud-account-icon" aria-hidden="true">☁</span>
+            <span id="cloudAccountLabel">云端登录</span>
+          </button>
+          <button class="icon-btn" id="themeBtn" aria-label="切换夜间模式">☾</button>
+        </div>
       </div>
       <div class="today-line">
         <div class="today-date" id="todayDate"></div>
@@ -52,6 +58,12 @@
       <div class="stat"><strong id="favCount">0</strong><span>珍藏回忆</span></div>
     </section>
 
+    <section class="cloud-ribbon" id="cloudRibbon" aria-live="polite">
+      <span class="cloud-status-dot" id="cloudStatusDot" aria-hidden="true"></span>
+      <span class="cloud-ribbon-text" id="cloudStatusText">当前仅保存在本机浏览器</span>
+      <button type="button" id="cloudRibbonBtn">登录云端</button>
+    </section>
+
     <section class="view active" data-view="write">
       <div class="panel panel-with-mascot">
         <img class="panel-mascot mascot-write" src="assets/aliens/alien-02.webp" alt="抱着花束的绿色小外星人" />
@@ -63,7 +75,10 @@
         <div class="grid-2">
           <div>
             <label for="entryDate">日期</label>
-            <input type="date" id="entryDate" />
+            <div class="date-field-shell">
+              <span id="entryDateDisplay" aria-hidden="true">请选择日期</span>
+              <input type="date" id="entryDate" aria-label="日期" />
+            </div>
           </div>
           <div>
             <label for="weather">天气</label>
@@ -310,6 +325,13 @@
           <button type="button" id="exportTextBtn">导出纯文字版</button>
           <button type="button" id="clearBtn" style="color:var(--danger)">清空全部数据</button>
         </div>
+        <div class="cloud-backup-card">
+          <div>
+            <strong>森野云端</strong>
+            <span id="cloudBackupSummary">登录后可保存日记、照片、对话和头像，并在其他设备恢复。</span>
+          </div>
+          <button type="button" id="openCloudPanelBtn">打开云端面板</button>
+        </div>
         <div class="danger-note">
           日记、照片、情侣对话与自定义头像默认仅保存在当前设备的浏览器中。清理浏览器数据、换设备或卸载浏览器都可能丢失，请定期导出完整 JSON 备份。
         </div>
@@ -317,6 +339,81 @@
     </section>
   </main>
 
+
+  <div class="cloud-modal hidden" id="cloudModal" role="dialog" aria-modal="true" aria-labelledby="cloudModalTitle">
+    <div class="cloud-modal-backdrop" data-cloud-close></div>
+    <section class="cloud-modal-card">
+      <button class="cloud-modal-close" id="cloudModalClose" type="button" aria-label="关闭云端面板">×</button>
+      <div class="cloud-modal-heading">
+        <img src="assets/apples/apple-dew.png" alt="" aria-hidden="true" />
+        <div>
+          <div class="eyebrow">SENYE CLOUD</div>
+          <h2 id="cloudModalTitle">把小屋带到每一台设备</h2>
+          <p id="cloudModalSubtitle">登录后，日记、照片、情侣对话和自定义头像都可以同步。</p>
+        </div>
+      </div>
+
+      <div class="cloud-notice" id="cloudNotice" aria-live="polite">当前仍可正常使用本地小屋。</div>
+
+      <form class="cloud-auth-form" id="cloudAuthForm">
+        <label for="cloudEmail">邮箱</label>
+        <input id="cloudEmail" type="email" autocomplete="email" placeholder="请输入常用邮箱" required />
+        <label for="cloudPassword">密码</label>
+        <input id="cloudPassword" type="password" autocomplete="current-password" minlength="6" placeholder="至少 6 位" required />
+        <div class="cloud-auth-actions">
+          <button class="primary" id="cloudLoginBtn" type="submit">登录小屋</button>
+          <button class="soft-btn" id="cloudSignupBtn" type="button">第一次使用，注册账号</button>
+        </div>
+        <button class="cloud-link-btn" id="cloudResetBtn" type="button">忘记密码，发送重设邮件</button>
+        <p class="cloud-auth-tip">注册后需要到邮箱里点一次确认链接。账号密码不会写进网页文件。</p>
+      </form>
+
+      <section class="cloud-recovery hidden" id="cloudRecovery">
+        <label for="cloudNewPassword">设置新密码</label>
+        <input id="cloudNewPassword" type="password" minlength="6" autocomplete="new-password" placeholder="至少 6 位" />
+        <label for="cloudNewPasswordAgain">再输入一次</label>
+        <input id="cloudNewPasswordAgain" type="password" minlength="6" autocomplete="new-password" placeholder="再次输入新密码" />
+        <button class="primary" id="cloudUpdatePasswordBtn" type="button">保存新密码</button>
+      </section>
+
+      <section class="cloud-user-panel hidden" id="cloudUserPanel">
+        <div class="cloud-user-line">
+          <div>
+            <span>当前账户</span>
+            <strong id="cloudUserEmail">—</strong>
+          </div>
+          <button class="soft-btn" id="cloudLogoutBtn" type="button">退出登录</button>
+        </div>
+
+        <div class="cloud-sync-overview">
+          <div><span>本机内容</span><strong id="cloudLocalSummary">0 篇日记</strong></div>
+          <div><span>云端状态</span><strong id="cloudRemoteSummary">尚未读取</strong></div>
+          <div><span>最近同步</span><strong id="cloudLastSync">还没有同步</strong></div>
+        </div>
+
+        <div class="cloud-conflict-note hidden" id="cloudConflictNote">
+          本机和云端都有内容。先不要担心，选择“安全合并”不会直接丢掉任何一边的日记。
+        </div>
+
+        <div class="cloud-sync-actions">
+          <button class="primary" id="cloudSyncNowBtn" type="button">立即保存到云端</button>
+          <button class="soft-btn" id="cloudMergeBtn" type="button">安全合并本机与云端</button>
+          <button class="soft-btn" id="cloudRestoreBtn" type="button">用云端内容恢复本机</button>
+        </div>
+
+        <div class="cloud-auto-row">
+          <span>自动同步</span>
+          <strong id="cloudAutoStatus">登录后开启</strong>
+        </div>
+
+        <details class="cloud-history">
+          <summary>查看历史备份</summary>
+          <div id="cloudHistoryList" class="cloud-history-list">还没有读取备份记录。</div>
+          <button class="soft-btn" id="cloudRefreshHistoryBtn" type="button">刷新备份列表</button>
+        </details>
+      </section>
+    </section>
+  </div>
 
   <div class="lightbox hidden" id="lightbox" role="dialog" aria-modal="true" aria-label="照片大图查看">
     <button class="lightbox-close" id="lightboxClose" type="button" aria-label="关闭大图">×</button>
@@ -343,6 +440,8 @@
 <script src="js/diary.js"></script>
 <script src="js/backup.js"></script>
 <script src="js/decor.js"></script>
-<script src="js/app.js"></script>
+<script src="js/app.js?v=63"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/cloud.js"></script>
 </body>
 </html>

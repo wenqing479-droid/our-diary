@@ -1600,3 +1600,191 @@ label::before{
 @media(prefers-reduced-motion:reduce){
   .scene-alien,.alien-pop{animation:none}
 }
+
+/* V6 云端账户与同步 */
+.hero-actions{display:flex;align-items:center;gap:8px;position:relative;z-index:4}
+.cloud-account-btn{
+  min-height:40px;padding:0 13px;border:1px solid rgba(111,158,120,.28);border-radius:999px;
+  display:inline-flex;align-items:center;gap:7px;color:var(--text);font-size:12px;font-weight:800;
+  background:rgba(255,255,255,.62);box-shadow:0 6px 18px rgba(49,82,67,.08)
+}
+[data-theme="night"] .cloud-account-btn{background:rgba(19,32,31,.46);border-color:var(--line)}
+.cloud-account-icon{font-size:17px;line-height:1;color:var(--accent-2)}
+.cloud-ribbon{
+  margin:10px 2px 16px;padding:10px 12px;border:1px solid var(--line);border-radius:17px;
+  display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;
+  background:rgba(255,255,255,.58);box-shadow:0 9px 24px rgba(62,100,87,.07)
+}
+[data-theme="night"] .cloud-ribbon{background:rgba(28,45,43,.72)}
+.cloud-status-dot{width:10px;height:10px;border-radius:50%;background:#a7b5af;box-shadow:0 0 0 4px rgba(167,181,175,.14)}
+.cloud-status-dot[data-status="saved"]{background:#70a97b;box-shadow:0 0 0 4px rgba(112,169,123,.16)}
+.cloud-status-dot[data-status="syncing"]{background:#78a9c8;box-shadow:0 0 0 4px rgba(120,169,200,.16);animation:cloudPulse 1s ease infinite}
+.cloud-status-dot[data-status="pending"]{background:#d9ae50;box-shadow:0 0 0 4px rgba(217,174,80,.16)}
+.cloud-status-dot[data-status="warn"]{background:#d58b55;box-shadow:0 0 0 4px rgba(213,139,85,.16)}
+.cloud-status-dot[data-status="error"]{background:#c76f6f;box-shadow:0 0 0 4px rgba(199,111,111,.16)}
+@keyframes cloudPulse{50%{transform:scale(.75);opacity:.62}}
+.cloud-ribbon-text{min-width:0;color:var(--muted);font-size:12px;line-height:1.5}
+.cloud-ribbon button,.cloud-backup-card button{
+  border:0;border-radius:999px;padding:8px 12px;background:var(--soft-blue);color:var(--text);font-size:12px;font-weight:800
+}
+.cloud-backup-card{
+  margin-top:12px;padding:13px 14px;border:1px solid var(--line);border-radius:17px;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;background:linear-gradient(135deg,rgba(226,240,248,.66),rgba(232,242,223,.65))
+}
+[data-theme="night"] .cloud-backup-card{background:rgba(38,63,78,.44)}
+.cloud-backup-card>div{min-width:0}.cloud-backup-card strong{display:block;font-size:14px}.cloud-backup-card span{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.55}
+body.cloud-modal-open{overflow:hidden}
+.cloud-modal{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:18px}
+.cloud-modal-backdrop{position:absolute;inset:0;background:rgba(14,31,28,.58);backdrop-filter:blur(8px)}
+.cloud-modal-card{
+  position:relative;z-index:1;width:min(100%,620px);max-height:min(88vh,820px);overflow:auto;
+  padding:24px;border:1px solid rgba(255,255,255,.65);border-radius:28px;background:var(--panel-solid);box-shadow:0 28px 90px rgba(0,0,0,.28)
+}
+.cloud-modal-close{position:absolute;right:15px;top:13px;width:36px;height:36px;border:0;border-radius:50%;background:var(--soft);color:var(--text);font-size:24px;line-height:1}
+.cloud-modal-heading{display:flex;gap:13px;align-items:center;padding-right:35px}.cloud-modal-heading img{width:60px;height:60px;object-fit:contain}.cloud-modal-heading h2{margin:2px 0 4px;font-size:22px}.cloud-modal-heading p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}
+.cloud-notice{margin:16px 0;padding:11px 13px;border-radius:15px;background:var(--soft-blue);color:var(--muted);font-size:12px;line-height:1.65}
+.cloud-notice[data-kind="success"]{background:var(--soft);color:var(--text)}
+.cloud-notice[data-kind="warn"]{background:var(--soft-yellow);color:var(--text)}
+.cloud-notice[data-kind="error"]{background:rgba(189,104,104,.12);color:var(--danger)}
+.cloud-auth-form,.cloud-recovery{display:grid;gap:9px}.cloud-auth-form label,.cloud-recovery label{font-size:12px;font-weight:800;color:var(--text)}
+.cloud-auth-form input,.cloud-recovery input{width:100%;min-height:45px;border:1px solid var(--line);border-radius:14px;padding:0 13px;color:var(--text);background:var(--panel);outline:none}
+.cloud-auth-form input:focus,.cloud-recovery input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(111,158,120,.12)}
+.cloud-auth-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:6px}.cloud-auth-actions .primary,.cloud-recovery .primary{min-height:44px}
+.cloud-link-btn{justify-self:center;border:0;background:transparent;color:var(--accent-2);padding:6px;font-size:12px;text-decoration:underline}
+.cloud-auth-tip{margin:0;text-align:center;color:var(--muted);font-size:11px;line-height:1.6}
+.cloud-user-panel{display:grid;gap:14px}.cloud-user-line{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:17px;background:var(--panel)}
+.cloud-user-line span{display:block;color:var(--muted);font-size:10px}.cloud-user-line strong{display:block;margin-top:3px;font-size:13px;overflow-wrap:anywhere}
+.cloud-sync-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.cloud-sync-overview>div{min-width:0;padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.45)}
+[data-theme="night"] .cloud-sync-overview>div{background:rgba(255,255,255,.03)}
+.cloud-sync-overview span{display:block;color:var(--muted);font-size:10px}.cloud-sync-overview strong{display:block;margin-top:5px;font-size:12px;line-height:1.45;overflow-wrap:anywhere}
+.cloud-conflict-note{padding:11px 13px;border-radius:14px;background:var(--soft-yellow);font-size:12px;line-height:1.65}
+.cloud-sync-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.cloud-sync-actions .primary{grid-column:1/-1;min-height:46px}.cloud-sync-actions button{min-height:42px}
+.cloud-auto-row{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;color:var(--muted);font-size:12px}.cloud-auto-row strong{color:var(--accent)}
+.cloud-history{border-top:1px solid var(--line);padding-top:12px}.cloud-history summary{cursor:pointer;font-size:13px;font-weight:800}.cloud-history-list{display:grid;gap:8px;margin:10px 0;color:var(--muted);font-size:12px}
+.cloud-history-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.cloud-history-item div{min-width:0}.cloud-history-item strong{display:block;color:var(--text);font-size:12px}.cloud-history-item span{display:block;margin-top:3px;font-size:10px;line-height:1.45}.cloud-history-item button{flex:0 0 auto;padding:7px 9px;font-size:10px}
+@media(max-width:620px){
+  .hero-actions{gap:6px}.cloud-account-btn{width:40px;padding:0;justify-content:center}.cloud-account-btn span:last-child{display:none}
+  .cloud-ribbon{grid-template-columns:auto 1fr}.cloud-ribbon button{grid-column:2;justify-self:start;margin-top:-2px}
+  .cloud-backup-card{align-items:flex-start;flex-direction:column}.cloud-backup-card button{align-self:stretch}
+  .cloud-modal{padding:9px}.cloud-modal-card{padding:20px 16px;border-radius:23px;max-height:93vh}.cloud-modal-heading img{width:48px;height:48px}.cloud-modal-heading h2{font-size:19px}
+  .cloud-auth-actions,.cloud-sync-actions{grid-template-columns:1fr}.cloud-sync-actions .primary{grid-column:auto}.cloud-sync-overview{grid-template-columns:1fr}.cloud-history-item{align-items:flex-start;flex-direction:column}.cloud-history-item button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.cloud-status-dot[data-status="syncing"]{animation:none}}
+
+
+/* ===== V6.2：移动端表单宽度适配（修复 iPhone 日期框右侧被裁切） ===== */
+input, textarea, select{
+  display:block;
+  min-width:0;
+  max-width:100%;
+}
+.grid-2,
+.grid-2 > div{
+  min-width:0;
+  max-width:100%;
+}
+input[type="date"]{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  -webkit-min-logical-width:0;
+}
+@media(max-width:480px){
+  .grid-2{
+    width:100%;
+    min-width:0;
+  }
+  .grid-2 > div,
+  .grid-2 input,
+  .grid-2 select{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+  }
+  input[type="date"]{
+    inline-size:100%;
+    min-inline-size:0;
+    max-inline-size:100%;
+  }
+}
+
+
+/* ===== V6.3：iOS 日期控件重构（避免原生控件撑破卡片） ===== */
+.date-field-shell{
+  position:relative;
+  display:block;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  min-height:50px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  overflow:hidden;
+  color:var(--text);
+  background:var(--panel-solid);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+  transition:.2s;
+}
+.date-field-shell:focus-within{
+  border-color:var(--accent);
+  box-shadow:0 0 0 4px rgba(201,130,120,.13), inset 0 1px 0 rgba(255,255,255,.72);
+}
+#entryDateDisplay{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-width:0;
+  min-height:48px;
+  padding:12px 44px 12px 13px;
+  overflow:hidden;
+  color:var(--text);
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  pointer-events:none;
+}
+.date-field-shell::after{
+  content:"▾";
+  position:absolute;
+  right:15px;
+  top:50%;
+  transform:translateY(-52%);
+  color:var(--text);
+  font-size:17px;
+  font-weight:800;
+  line-height:1;
+  opacity:.86;
+  pointer-events:none;
+}
+.date-field-shell input[type="date"]{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:block;
+  width:100%;
+  height:100%;
+  min-width:0;
+  max-width:none;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  opacity:0;
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.date-field-shell input[type="date"]::-webkit-date-and-time-value{
+  min-width:0;
+}
+@media(max-width:480px){
+  .date-field-shell{
+    width:100%;
+    max-width:100%;
+  }
+  #entryDateDisplay{
+    font-size:16px;
+    padding-right:42px;
+  }
+}

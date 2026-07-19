@@ -83,6 +83,7 @@
   const $ = (id) => document.getElementById(id);
   const els = {
     date: $("entryDate"),
+    dateDisplay: $("entryDateDisplay"),
     weather: $("weather"),
     title: $("title"),
     content: $("content"),
@@ -148,9 +149,27 @@
     return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 10);
   }
 
+  function formatEntryDate(dateStr) {
+    if (!dateStr) return "请选择日期";
+    const [year, month, day] = dateStr.split("-").map(Number);
+    if (!year || !month || !day) return dateStr;
+    return `${year}年${month}月${day}日`;
+  }
+
+  function updateEntryDateDisplay() {
+    if (!els.dateDisplay) return;
+    els.dateDisplay.textContent = formatEntryDate(els.date.value);
+  }
+
+  function setEntryDate(value) {
+    els.date.value = value || todayISO();
+    updateEntryDateDisplay();
+  }
+
   function saveEntries() {
     try {
       entries = HomeDiary.saveEntries(entries);
+      document.dispatchEvent(new CustomEvent("senye:local-change", {detail: {kind: "entries"}}));
       return true;
     } catch (err) {
       toast("保存失败：浏览器空间可能不足，请先导出备份或删除部分照片");
@@ -161,6 +180,7 @@
   function saveMessages() {
     try {
       messages = HomeChat.saveMessages(messages);
+      document.dispatchEvent(new CustomEvent("senye:local-change", {detail: {kind: "messages"}}));
       return true;
     } catch (err) {
       toast("对话保存失败：浏览器空间可能不足，请先导出完整备份");
@@ -171,6 +191,7 @@
   function saveAvatars() {
     try {
       avatars = HomeAvatars.saveAvatars(avatars);
+      document.dispatchEvent(new CustomEvent("senye:local-change", {detail: {kind: "avatars"}}));
       return true;
     } catch (err) {
       toast("头像保存失败：浏览器空间可能不足，请先导出完整备份");
@@ -247,7 +268,7 @@
   function resetForm() {
     editingId = null;
     photosData = [];
-    els.date.value = todayISO();
+    setEntryDate(todayISO());
     els.weather.value = "";
     els.title.value = "";
     els.content.value = "";
@@ -511,7 +532,7 @@
     const entry = entries.find(e => e.id === id);
     if (!entry) return;
     editingId = id;
-    els.date.value = entry.date || todayISO();
+    setEntryDate(entry.date || todayISO());
     els.weather.value = entry.weather || "";
     els.title.value = entry.title || "";
     els.content.value = entry.content || "";
@@ -1088,6 +1109,63 @@
     els.themeBtn.textContent = theme === "night" ? "☀" : "☾";
   }
 
+  function getAppState() {
+    return {
+      entries: HomeDiary.normalizeEntries(entries),
+      messages: HomeChat.normalizeMessages(messages),
+      avatars: HomeAvatars.normalizeState(avatars),
+      theme: document.documentElement.dataset.theme || localStorage.getItem(THEME_KEY) || "day"
+    };
+  }
+
+  function getAppSummary() {
+    return {
+      entries: entries.length,
+      photos: HomeDiary.countPhotos(entries),
+      messages: messages.length,
+      customAvatars: HomeAvatars.countCustom(avatars)
+    };
+  }
+
+  function applyCloudState(rawState, mode = "replace") {
+    const state = rawState && typeof rawState === "object" ? rawState : {};
+    if (mode === "merge") {
+      entries = HomeDiary.mergeEntries(entries, state.entries || []);
+      messages = HomeChat.mergeMessages(messages, state.messages || []);
+      avatars = HomeAvatars.mergeStates(avatars, state.avatars || {});
+    } else {
+      entries = HomeDiary.normalizeEntries(state.entries || []);
+      messages = HomeChat.normalizeMessages(state.messages || []);
+      avatars = HomeAvatars.normalizeState(state.avatars || {});
+    }
+
+    if (!saveEntries() || !saveMessages() || !saveAvatars()) {
+      throw new Error("本机浏览器空间不足，云端内容未能完整写入");
+    }
+
+    if (state.theme === "day" || state.theme === "night") applyTheme(state.theme);
+    updateStats();
+    renderEntries();
+    applyAvatarImages();
+    renderChatMessages();
+    resetForm();
+    resetChatComposer();
+    return getAppState();
+  }
+
+  window.HomeApp = {
+    getState: getAppState,
+    getSummary: getAppSummary,
+    applyCloudState,
+    refresh() {
+      updateStats();
+      renderEntries();
+      applyAvatarImages();
+      renderChatMessages();
+    },
+    showToast: toast
+  };
+
   // Events
   document.querySelectorAll(".tabbar button").forEach(btn => {
     btn.addEventListener("click", () => switchView(btn.dataset.tab));
@@ -1269,8 +1347,11 @@
     applyTheme(document.documentElement.dataset.theme === "night" ? "day" : "night");
   });
 
+  els.date.addEventListener("input", updateEntryDateDisplay);
+  els.date.addEventListener("change", updateEntryDateDisplay);
+
   // Init
-  els.date.value = todayISO();
+  setEntryDate(todayISO());
   renderPhotoEditor();
   applyAvatarImages();
   setChatSender("qingqing");

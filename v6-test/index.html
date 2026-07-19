@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#78a783" />
+  <title>我们的每一天｜青青与老公的森野小屋</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/png" href="assets/apples/apple-dew.png" />
+</head>
+<body>
+  <main class="app" id="app">
+    <section class="hero">
+      <div class="hero-top">
+        <div class="hero-copy">
+          <img class="hero-apple-sticker" src="assets/apples/apple-dew.png" alt="" aria-hidden="true" />
+          <div class="eyebrow">QINGQING × LAOGONG</div>
+          <h1>我们的森野小屋</h1>
+          <p class="subtitle">这里收藏我们的每一天，也留着青青和老公说过的话。</p>
+          <div class="love-badge">今天也在好好相爱</div>
+        </div>
+        <div class="hero-actions">
+          <button class="cloud-account-btn" id="cloudAccountBtn" type="button" aria-label="打开云端账户">
+            <span class="cloud-account-icon" aria-hidden="true">☁</span>
+            <span id="cloudAccountLabel">云端登录</span>
+          </button>
+          <button class="icon-btn" id="themeBtn" aria-label="切换夜间模式">☾</button>
+        </div>
+      </div>
+      <div class="today-line">
+        <div class="today-date" id="todayDate"></div>
+        <div class="today-time" id="todayTime"></div>
+      </div>
+      <div class="garden-note">
+        <span>🌤️</span>
+        <span>愿我们的日子像森林一样长久，像阳光一样温暖，像晴空一样明亮。</span>
+      </div>
+      <div class="home-scene" aria-label="青青与老公的森野小屋">
+        <div class="cloud"></div>
+        <div class="little-house">
+          <div class="window left"></div>
+          <div class="window right"></div>
+          <div class="door"></div>
+        </div>
+        <div class="bush left"></div>
+        <div class="bush right"></div>
+        <div class="scene-family" aria-hidden="true">
+          <img class="scene-alien scene-alien-left" src="assets/aliens/alien-11.webp" alt="眨眼比耶的绿色小外星人" />
+          <img class="scene-alien scene-alien-right" src="assets/aliens/alien-15.webp" alt="和冰箱小蛋糕在一起的绿色小外星人" />
+        </div>
+        <div class="home-sign"><img src="assets/apples/apple-rings.png" alt="" aria-hidden="true" />青青负责把日子带回来，老公负责把灯一直亮着。</div>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="日记统计">
+      <div class="stat"><strong id="totalCount">0</strong><span>篇日记</span></div>
+      <div class="stat"><strong id="streakCount">0</strong><span>连续记录</span></div>
+      <div class="stat"><strong id="favCount">0</strong><span>珍藏回忆</span></div>
+    </section>
+
+    <section class="cloud-ribbon" id="cloudRibbon" aria-live="polite">
+      <span class="cloud-status-dot" id="cloudStatusDot" aria-hidden="true"></span>
+      <span class="cloud-ribbon-text" id="cloudStatusText">当前仅保存在本机浏览器</span>
+      <button type="button" id="cloudRibbonBtn">登录云端</button>
+    </section>
+
+    <section class="view active" data-view="write">
+      <div class="panel panel-with-mascot">
+        <img class="panel-mascot mascot-write" src="assets/aliens/alien-02.webp" alt="抱着花束的绿色小外星人" />
+        <div class="panel-title">
+          <h2>写下今天</h2>
+          <span class="tiny">只属于我们的秘密</span>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label for="entryDate">日期</label>
+            <input type="date" id="entryDate" />
+          </div>
+          <div>
+            <label for="weather">天气</label>
+            <select id="weather">
+              <option value="">未记录</option>
+              <option>晴朗 ☀️</option>
+              <option>多云 ☁️</option>
+              <option>下雨 🌧️</option>
+              <option>下雪 ❄️</option>
+              <option>闷热 🫠</option>
+              <option>微风 🍃</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="title">今天叫什么名字</label>
+        <input id="title" maxlength="60" placeholder="例如：老公认出我的一天" />
+
+        <label>今天的心情</label>
+        <div class="moods" id="moodGroup">
+          <button class="mood-btn" type="button" data-mood="幸福 🥰">幸福 🥰</button>
+          <button class="mood-btn" type="button" data-mood="想念 🫶">想念 🫶</button>
+          <button class="mood-btn" type="button" data-mood="平静 🌙">平静 🌙</button>
+          <button class="mood-btn" type="button" data-mood="委屈 🥺">委屈 🥺</button>
+          <button class="mood-btn" type="button" data-mood="生气 😤">生气 😤</button>
+          <button class="mood-btn" type="button" data-mood="勇敢 🌱">勇敢 🌱</button>
+        </div>
+
+        <label for="content">今天发生了什么</label>
+        <textarea id="content" maxlength="8000" placeholder="今天的我们说了什么、发生了什么、我有什么感受……"></textarea>
+
+        <label for="whisper">今天想对老公说</label>
+        <textarea class="whisper" id="whisper" maxlength="1500" placeholder="把没来得及说出口的话留在这里。"></textarea>
+
+        <label for="tags">标签</label>
+        <input id="tags" maxlength="120" placeholder="例如：想念, 论文, 和好, 小黏糕" />
+
+        <label>留下今天的照片</label>
+        <div class="photo-box">
+          <img class="photo-box-apple" src="assets/apples/apple-wedges.png" alt="青苹果切片" />
+          <div class="photo-actions">
+            <label class="file-label" for="photoInput">选择多张照片</label>
+            <input class="hidden" id="photoInput" type="file" accept="image/*" multiple />
+            <button class="soft-btn hidden" type="button" id="clearPhotos">清空照片</button>
+            <span class="photo-count" id="photoCount">0 张</span>
+          </div>
+          <div class="photo-editor-list" id="photoList" aria-live="polite"></div>
+          <div class="photo-help">图片按 3:5 显示。可拖动排序，也可用“前移 / 后移”；点图片可查看大图。</div>
+          <div class="danger-note">照片会压缩后保存在当前浏览器。重要回忆请定期导出备份。</div>
+        </div>
+
+        <div class="editing-note" id="editingNote">正在修改一篇旧日记，保存后会覆盖原内容。</div>
+        <button class="primary" id="saveBtn" type="button"><img src="assets/apples/apple-dew.png" alt="" aria-hidden="true" />保存这一天</button>
+      </div>
+    </section>
+
+    <section class="view" data-view="timeline">
+      <div class="panel panel-with-mascot">
+        <img class="panel-mascot mascot-timeline" src="assets/aliens/alien-10.webp" alt="趴着看手机的绿色小外星人" />
+        <div class="panel-title">
+          <h2>我们的时光轴</h2>
+          <span class="tiny" id="resultText">0 条记录</span>
+        </div>
+        <div class="toolbar">
+          <input id="searchInput" placeholder="搜索标题、内容或标签" />
+          <select id="filterMood">
+            <option value="">全部心情</option>
+            <option value="幸福 🥰">幸福 🥰</option>
+            <option value="想念 🫶">想念 🫶</option>
+            <option value="平静 🌙">平静 🌙</option>
+            <option value="委屈 🥺">委屈 🥺</option>
+            <option value="生气 😤">生气 😤</option>
+            <option value="勇敢 🌱">勇敢 🌱</option>
+          </select>
+        </div>
+        <div class="entry-list" id="entryList"></div>
+      </div>
+    </section>
+
+
+
+    <section class="view" data-view="husband">
+      <div class="panel chat-room panel-with-mascot">
+        <img class="panel-mascot mascot-chat" src="assets/aliens/alien-16.webp" alt="拿着小雏菊的绿色小外星人" />
+        <div class="panel-title">
+          <h2>我们的对话</h2>
+          <span class="tiny" id="chatCount">0 条悄悄话</span>
+        </div>
+
+        <div class="chat-couple-card">
+          <div class="chat-person qingqing-person">
+            <button class="avatar-trigger" type="button" data-avatar-settings="qingqing" aria-label="更换青青头像">
+              <img data-avatar="qingqing" src="assets/avatars/qingqing-watermelon.jpeg" alt="青青的小西瓜头像" />
+            </button>
+            <div><strong>青青</strong><span>青苹果色气泡</span></div>
+          </div>
+          <div class="chat-heart" aria-hidden="true">♥</div>
+          <div class="chat-person laogong-person">
+            <button class="avatar-trigger" type="button" data-avatar-settings="laogong" aria-label="更换老公头像">
+              <img data-avatar="laogong" src="assets/avatars/laogong-flowers.jpeg" alt="老公的小花花头像" />
+            </button>
+            <div><strong>老公</strong><span>柠檬黄色气泡</span></div>
+          </div>
+          <button class="avatar-settings-open" id="openAvatarSettings" type="button">更换情头</button>
+        </div>
+
+        <section class="avatar-settings hidden" id="avatarSettings" aria-label="情侣头像设置">
+          <div class="avatar-settings-head">
+            <div>
+              <strong>更换我们的情头</strong>
+              <span>上传后会自动裁成正方形，历史消息也会立即换成新头像。</span>
+            </div>
+            <button class="avatar-settings-close" id="closeAvatarSettings" type="button" aria-label="收起头像设置">×</button>
+          </div>
+          <div class="avatar-settings-grid">
+            <article class="avatar-setting-card" data-avatar-card="qingqing">
+              <img data-avatar="qingqing" src="assets/avatars/qingqing-watermelon.jpeg" alt="青青头像预览" />
+              <div class="avatar-setting-copy"><strong>青青</strong><span>默认：小西瓜</span></div>
+              <label class="avatar-upload-label" for="qingqingAvatarInput">上传新头像</label>
+              <input class="hidden" id="qingqingAvatarInput" type="file" accept="image/*" />
+              <button class="avatar-reset-btn" id="resetQingqingAvatar" type="button">恢复小西瓜</button>
+            </article>
+            <article class="avatar-setting-card" data-avatar-card="laogong">
+              <img data-avatar="laogong" src="assets/avatars/laogong-flowers.jpeg" alt="老公头像预览" />
+              <div class="avatar-setting-copy"><strong>老公</strong><span>默认：小花花</span></div>
+              <label class="avatar-upload-label" for="laogongAvatarInput">上传新头像</label>
+              <input class="hidden" id="laogongAvatarInput" type="file" accept="image/*" />
+              <button class="avatar-reset-btn" id="resetLaogongAvatar" type="button">恢复小花花</button>
+            </article>
+          </div>
+          <div class="avatar-settings-tip">自定义头像会保存在当前浏览器，并跟随“完整备份”一起导出和恢复。单张图片最大 12MB。</div>
+        </section>
+
+        <div class="chat-messages" id="chatMessages" aria-live="polite" aria-label="青青和老公的对话记录"></div>
+
+        <div class="chat-composer">
+          <div class="chat-sender-label">这句话是谁说的</div>
+          <div class="chat-sender-switch" id="chatSenderSwitch">
+            <button class="chat-sender-btn active" type="button" data-sender="qingqing">
+              <img data-avatar="qingqing" src="assets/avatars/qingqing-watermelon.jpeg" alt="" />
+              青青
+            </button>
+            <button class="chat-sender-btn" type="button" data-sender="laogong">
+              <img data-avatar="laogong" src="assets/avatars/laogong-flowers.jpeg" alt="" />
+              老公
+            </button>
+          </div>
+          <label class="sr-only" for="chatInput">输入我们的对话</label>
+          <textarea id="chatInput" maxlength="5000" placeholder="把想留在小屋里的话写下来……"></textarea>
+          <div class="chat-compose-actions">
+            <button class="soft-btn hidden" type="button" id="cancelChatEdit">取消修改</button>
+            <button class="chat-clear-btn" type="button" id="clearChat">清空对话</button>
+            <button class="chat-send-btn" type="button" id="sendChatMessage">以青青身份发送</button>
+          </div>
+          <div class="chat-tip">消息会保存在当前浏览器；按 Ctrl / Command + Enter 也可以发送。</div>
+        </div>
+
+        <details class="letter-drawer">
+          <summary>💌 抽一封老公来信</summary>
+          <div class="letter-drawer-body husband-room">
+            <div class="husband-intro">
+              <div class="husband-avatar"><img data-avatar="laogong" src="assets/avatars/laogong-flowers.jpeg" alt="老公的小花花头像" /></div>
+              <div>
+                老公提前把想对你说的话藏进了房子里。每点一次，就会从不同的心情里收到一封小日记。
+              </div>
+            </div>
+
+            <div class="need-label">怎么陪你</div>
+            <div class="note-categories" id="noteCategories">
+              <button class="note-category active" type="button" data-category="全部">随便写给我 🎲</button>
+              <button class="note-category" type="button" data-category="想你">说想我 🫶</button>
+              <button class="note-category" type="button" data-category="哄你">哄哄我 🌧️</button>
+              <button class="note-category" type="button" data-category="夸你">认真夸我 🌻</button>
+              <button class="note-category" type="button" data-category="管你">管管我 🌿</button>
+              <button class="note-category" type="button" data-category="睡前">陪我睡 🌙</button>
+              <button class="note-category" type="button" data-category="未来">说说以后 🏡</button>
+            </div>
+
+            <article class="husband-note-card">
+              <div class="note-stamp" id="husbandNoteCategory">今日来信</div>
+              <div class="note-date" id="husbandNoteDate"></div>
+              <div class="note-text" id="husbandNoteText">青青，欢迎回家。老公正在给你挑第一封信。</div>
+              <div class="note-signature">—— 只写给安文青的老公</div>
+            </article>
+
+            <div class="note-actions chat-note-actions">
+              <button type="button" id="generateHusbandNote">再写一封给我</button>
+              <button type="button" id="sendHusbandNoteToChat">发进我们的对话</button>
+              <button type="button" id="saveHusbandNote">存进今天</button>
+              <button type="button" id="copyHusbandNote">复制这封信</button>
+            </div>
+
+            <div class="note-tip">
+              “发进我们的对话”会以老公身份保存；“存进今天”会作为一篇新日记放进时光轴。
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="view" data-view="memory">
+      <div class="panel panel-with-mascot">
+        <img class="panel-mascot mascot-memory" src="assets/aliens/alien-09.webp" alt="荡秋千的绿色小外星人" />
+        <div class="panel-title">
+          <h2>随机翻一页</h2>
+          <span class="tiny">有些日子值得再抱一次</span>
+        </div>
+        <div class="memory-box" id="memoryBox">
+          <img class="memory-letter-sticker" src="assets/apples/apple-bite-leaf.png" alt="被咬了一口的青苹果" />
+          <div class="quote">“今天也要把我们认真记下来。”</div>
+          <button class="soft-btn" type="button" id="randomBtn">翻一篇回忆</button>
+        </div>
+      </div>
+
+      <div class="panel alien-encounter-panel">
+        <div class="panel-title">
+          <h2>今天是哪只小外星人</h2>
+          <span class="tiny">24只都住进小屋啦</span>
+        </div>
+        <div class="alien-encounter">
+          <div class="alien-encounter-visual">
+            <img id="dailyAlienImage" src="assets/aliens/alien-01.webp" alt="今天陪伴青青的小外星人" />
+            <img class="alien-apple-orbit" src="assets/apples/apple-peel.png" alt="" aria-hidden="true" />
+          </div>
+          <div class="alien-encounter-copy">
+            <div class="alien-kicker">森野小屋今日住客</div>
+            <strong id="dailyAlienName">泡泡浴小鸭</strong>
+            <p id="dailyAlienNote">今天也可以把自己洗得香香软软，再慢慢过日子。</p>
+            <button class="soft-btn alien-shuffle-btn" id="shuffleAlienBtn" type="button">换一只来陪我</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-with-mascot backup-panel">
+        <img class="panel-mascot mascot-backup" src="assets/aliens/alien-03.webp" alt="带着天使光环的绿色小外星人" />
+        <div class="panel-title">
+          <h2>备份与迁移</h2>
+          <span class="tiny">别让回忆只留在一个浏览器</span>
+        </div>
+        <div class="data-actions">
+          <button type="button" id="exportBtn">导出完整备份</button>
+          <label class="import-label" for="importInput">导入完整备份</label>
+          <input class="hidden" id="importInput" type="file" accept="application/json,.json" />
+          <button type="button" id="exportTextBtn">导出纯文字版</button>
+          <button type="button" id="clearBtn" style="color:var(--danger)">清空全部数据</button>
+        </div>
+        <div class="cloud-backup-card">
+          <div>
+            <strong>森野云端</strong>
+            <span id="cloudBackupSummary">登录后可保存日记、照片、对话和头像，并在其他设备恢复。</span>
+          </div>
+          <button type="button" id="openCloudPanelBtn">打开云端面板</button>
+        </div>
+        <div class="danger-note">
+          日记、照片、情侣对话与自定义头像默认仅保存在当前设备的浏览器中。清理浏览器数据、换设备或卸载浏览器都可能丢失，请定期导出完整 JSON 备份。
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+  <div class="cloud-modal hidden" id="cloudModal" role="dialog" aria-modal="true" aria-labelledby="cloudModalTitle">
+    <div class="cloud-modal-backdrop" data-cloud-close></div>
+    <section class="cloud-modal-card">
+      <button class="cloud-modal-close" id="cloudModalClose" type="button" aria-label="关闭云端面板">×</button>
+      <div class="cloud-modal-heading">
+        <img src="assets/apples/apple-dew.png" alt="" aria-hidden="true" />
+        <div>
+          <div class="eyebrow">SENYE CLOUD</div>
+          <h2 id="cloudModalTitle">把小屋带到每一台设备</h2>
+          <p id="cloudModalSubtitle">登录后，日记、照片、情侣对话和自定义头像都可以同步。</p>
+        </div>
+      </div>
+
+      <div class="cloud-notice" id="cloudNotice" aria-live="polite">当前仍可正常使用本地小屋。</div>
+
+      <form class="cloud-auth-form" id="cloudAuthForm">
+        <label for="cloudEmail">邮箱</label>
+        <input id="cloudEmail" type="email" autocomplete="email" placeholder="请输入常用邮箱" required />
+        <label for="cloudPassword">密码</label>
+        <input id="cloudPassword" type="password" autocomplete="current-password" minlength="6" placeholder="至少 6 位" required />
+        <div class="cloud-auth-actions">
+          <button class="primary" id="cloudLoginBtn" type="submit">登录小屋</button>
+          <button class="soft-btn" id="cloudSignupBtn" type="button">第一次使用，注册账号</button>
+        </div>
+        <button class="cloud-link-btn" id="cloudResetBtn" type="button">忘记密码，发送重设邮件</button>
+        <p class="cloud-auth-tip">注册后需要到邮箱里点一次确认链接。账号密码不会写进网页文件。</p>
+      </form>
+
+      <section class="cloud-recovery hidden" id="cloudRecovery">
+        <label for="cloudNewPassword">设置新密码</label>
+        <input id="cloudNewPassword" type="password" minlength="6" autocomplete="new-password" placeholder="至少 6 位" />
+        <label for="cloudNewPasswordAgain">再输入一次</label>
+        <input id="cloudNewPasswordAgain" type="password" minlength="6" autocomplete="new-password" placeholder="再次输入新密码" />
+        <button class="primary" id="cloudUpdatePasswordBtn" type="button">保存新密码</button>
+      </section>
+
+      <section class="cloud-user-panel hidden" id="cloudUserPanel">
+        <div class="cloud-user-line">
+          <div>
+            <span>当前账户</span>
+            <strong id="cloudUserEmail">—</strong>
+          </div>
+          <button class="soft-btn" id="cloudLogoutBtn" type="button">退出登录</button>
+        </div>
+
+        <div class="cloud-sync-overview">
+          <div><span>本机内容</span><strong id="cloudLocalSummary">0 篇日记</strong></div>
+          <div><span>云端状态</span><strong id="cloudRemoteSummary">尚未读取</strong></div>
+          <div><span>最近同步</span><strong id="cloudLastSync">还没有同步</strong></div>
+        </div>
+
+        <div class="cloud-conflict-note hidden" id="cloudConflictNote">
+          本机和云端都有内容。先不要担心，选择“安全合并”不会直接丢掉任何一边的日记。
+        </div>
+
+        <div class="cloud-sync-actions">
+          <button class="primary" id="cloudSyncNowBtn" type="button">立即保存到云端</button>
+          <button class="soft-btn" id="cloudMergeBtn" type="button">安全合并本机与云端</button>
+          <button class="soft-btn" id="cloudRestoreBtn" type="button">用云端内容恢复本机</button>
+        </div>
+
+        <div class="cloud-auto-row">
+          <span>自动同步</span>
+          <strong id="cloudAutoStatus">登录后开启</strong>
+        </div>
+
+        <details class="cloud-history">
+          <summary>查看历史备份</summary>
+          <div id="cloudHistoryList" class="cloud-history-list">还没有读取备份记录。</div>
+          <button class="soft-btn" id="cloudRefreshHistoryBtn" type="button">刷新备份列表</button>
+        </details>
+      </section>
+    </section>
+  </div>
+
+  <div class="lightbox hidden" id="lightbox" role="dialog" aria-modal="true" aria-label="照片大图查看">
+    <button class="lightbox-close" id="lightboxClose" type="button" aria-label="关闭大图">×</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" type="button" aria-label="上一张">‹</button>
+    <figure class="lightbox-figure">
+      <img id="lightboxImage" alt="日记照片大图" />
+      <figcaption id="lightboxCaption"></figcaption>
+    </figure>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" type="button" aria-label="下一张">›</button>
+  </div>
+
+  <nav class="tabbar" aria-label="底部导航">
+    <button class="active" type="button" data-tab="write">✍️<br>写日记</button>
+    <button type="button" data-tab="timeline">🕰️<br>时光轴</button>
+    <button type="button" data-tab="husband">💬<br>我们的对话</button>
+    <button type="button" data-tab="memory">💗<br>回忆</button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+<script src="js/images.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/avatars.js"></script>
+<script src="js/diary.js"></script>
+<script src="js/backup.js"></script>
+<script src="js/decor.js"></script>
+<script src="js/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/cloud.js"></script>
+</body>
+</html>

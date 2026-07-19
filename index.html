@@ -5,984 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#78a783" />
   <title>我们的每一天｜青青与老公的森野小屋</title>
-  <style>
-    :root{
-      --bg:#f3f8ef;
-      --panel:rgba(255,255,255,.78);
-      --panel-solid:#fffef8;
-      --text:#24443d;
-      --muted:#6d837a;
-      --line:#d7e6d6;
-      --accent:#6f9e78;
-      --accent-2:#6f9fc4;
-      --yellow:#f3ca69;
-      --blue:#7eb1d2;
-      --green:#78a783;
-      --soft:#e8f2df;
-      --soft-blue:#e2f0f8;
-      --soft-yellow:#fff2c9;
-      --shadow:0 18px 46px rgba(62,100,87,.13);
-      --danger:#bd6868;
-      --ok:#6f9e78;
-    }
-    [data-theme="night"]{
-      --bg:#13201f;
-      --panel:rgba(28,45,43,.88);
-      --panel-solid:#1c2d2b;
-      --text:#edf7ed;
-      --muted:#aec4ba;
-      --line:#35524d;
-      --accent:#8fbe91;
-      --accent-2:#8bb8d4;
-      --yellow:#e9c96f;
-      --blue:#8bb8d4;
-      --green:#8fbe91;
-      --soft:#29483d;
-      --soft-blue:#263f4e;
-      --soft-yellow:#4b432a;
-      --shadow:0 18px 46px rgba(0,0,0,.33);
-      --danger:#e18a8a;
-      --ok:#9bc6a0;
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      min-height:100vh;
-      color:var(--text);
-      background:
-        radial-gradient(circle at 12% 5%, rgba(243,202,105,.34), transparent 22%),
-        radial-gradient(circle at 90% 13%, rgba(126,177,210,.28), transparent 24%),
-        radial-gradient(circle at 50% 96%, rgba(120,167,131,.24), transparent 30%),
-        linear-gradient(rgba(255,255,255,.20) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.20) 1px, transparent 1px),
-        var(--bg);
-      background-size:auto,auto,auto,26px 26px,26px 26px,auto;
-      font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
-      transition:background .25s,color .25s;
-    }
-    button,input,textarea,select{font:inherit}
-    button{cursor:pointer}
-    .app{
-      width:min(100%, 760px);
-      margin:0 auto;
-      padding:18px 14px calc(100px + env(safe-area-inset-bottom));
-    }
-    .hero{
-      padding:24px 20px 22px;
-      border:1px solid rgba(255,255,255,.5);
-      border-radius:28px;
-      background:
-        linear-gradient(135deg,
-          rgba(232,246,222,.92) 0%,
-          rgba(255,242,190,.88) 48%,
-          rgba(220,239,250,.90) 100%);
-      box-shadow:
-        0 22px 55px rgba(70,109,96,.16),
-        inset 0 1px 0 rgba(255,255,255,.85);
-      box-shadow:var(--shadow);
-      position:relative;
-      overflow:hidden;
-    }
-    [data-theme="night"] .hero{
-      background:linear-gradient(135deg, rgba(38,66,55,.96), rgba(49,54,42,.94), rgba(36,58,72,.94));
-      border-color:rgba(255,255,255,.06);
-    }
-    .hero::before,
-    .hero::after{
-      content:"";
-      position:absolute;
-      border-radius:50%;
-      pointer-events:none;
-      filter:blur(.2px);
-    }
-    .hero::before{
-      left:-35px;
-      bottom:-58px;
-      width:145px;
-      height:145px;
-      background:rgba(120,167,131,.22);
-      box-shadow:76px -92px 0 -46px rgba(255,255,255,.75);
-    }
-    .hero::after{
-      right:-40px;
-      top:-54px;
-      width:160px;
-      height:160px;
-      background:rgba(126,177,210,.22);
-      box-shadow:-76px 96px 0 -54px rgba(243,202,105,.52);
-    }
-    .hero-top{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      position:relative;
-      z-index:1;
-    }
-    .eyebrow{
-      color:var(--accent-2);
-      font-size:13px;
-      letter-spacing:.18em;
-      font-weight:700;
-      margin-bottom:8px;
-    }
-    h1{
-      margin:0;
-      font-size:clamp(27px,7vw,40px);
-      line-height:1.14;
-      letter-spacing:-.04em;
-    }
-    .subtitle{
-      margin:11px 0 0;
-      color:var(--muted);
-      line-height:1.7;
-      font-size:14px;
-    }
-    .icon-btn{
-      width:42px;height:42px;
-      border:none;border-radius:15px;
-      background:var(--soft);
-      color:var(--text);
-      display:grid;place-items:center;
-      font-size:19px;
-      position:relative; z-index:2;
-    }
-    .today-line{
-      margin-top:22px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:13px 15px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.45);
-      border-radius:18px;
-      position:relative;z-index:1;
-    }
-    [data-theme="night"] .today-line{background:rgba(0,0,0,.08)}
-    .today-date{font-size:14px;font-weight:700}
-    .today-time{font-size:13px;color:var(--muted)}
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:10px;
-      margin:14px 0 0;
-    }
-    .stat{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px 10px;
-      text-align:center;
-      box-shadow:0 7px 18px rgba(89,58,52,.05);
-    }
-    .stat strong{display:block;font-size:22px}
-    .stat span{font-size:12px;color:var(--muted)}
-    .panel{
-      margin-top:14px;
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:24px;
-      padding:18px;
-      box-shadow:var(--shadow);
-    }
-    .panel-title{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      margin-bottom:15px;
-    }
-    .panel-title h2{font-size:18px;margin:0}
-    .tiny{font-size:12px;color:var(--muted)}
-    label{
-      display:block;
-      font-size:13px;
-      font-weight:700;
-      margin:14px 0 7px;
-    }
-    input, textarea, select{
-      width:100%;
-      border:1px solid var(--line);
-      color:var(--text);
-      background:var(--panel-solid);
-      border-radius:15px;
-      padding:12px 13px;
-      outline:none;
-      transition:.2s;
-    }
-    input:focus,textarea:focus,select:focus{
-      border-color:var(--accent);
-      box-shadow:0 0 0 4px rgba(201,130,120,.13);
-    }
-    textarea{min-height:150px;resize:vertical;line-height:1.75}
-    .whisper{min-height:88px}
-    .grid-2{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-    .moods{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-    .mood-btn{
-      border:1px solid var(--line);
-      background:var(--panel-solid);
-      color:var(--text);
-      border-radius:999px;
-      padding:8px 11px;
-      transition:.2s;
-    }
-    .mood-btn.active{
-      color:#fff;
-      background:var(--accent);
-      border-color:var(--accent);
-      transform:translateY(-1px);
-    }
-    .photo-box{
-      border:1px dashed var(--accent);
-      border-radius:18px;
-      padding:12px;
-      background:rgba(201,130,120,.06);
-    }
-    .photo-actions{display:flex;gap:8px;flex-wrap:wrap}
-    .file-label,.soft-btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border:none;
-      border-radius:13px;
-      padding:10px 13px;
-      background:var(--soft);
-      color:var(--text);
-      font-weight:700;
-      font-size:13px;
-    }
-    .photo-preview{
-      display:none;
-      width:100%;
-      max-height:290px;
-      object-fit:cover;
-      border-radius:15px;
-      margin-top:10px;
-      border:1px solid var(--line);
-    }
-    .primary{
-      width:100%;
-      margin-top:18px;
-      border:none;
-      border-radius:16px;
-      padding:13px 16px;
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      color:white;
-      font-weight:800;
-      letter-spacing:.04em;
-      box-shadow:0 10px 24px rgba(159,110,104,.22);
-    }
-    .primary:active{transform:translateY(1px)}
-    .editing-note{
-      display:none;
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius:13px;
-      background:rgba(201,130,120,.12);
-      color:var(--accent-2);
-      font-size:13px;
-    }
-    .toolbar{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-bottom:12px;
-    }
-    .toolbar input{flex:1;min-width:170px}
-    .toolbar select{width:auto;min-width:118px}
-    .entry-list{
-      display:grid;
-      gap:12px;
-    }
-    .empty{
-      text-align:center;
-      color:var(--muted);
-      padding:28px 12px 18px;
-      line-height:1.8;
-    }
-    .entry{
-      background:var(--panel-solid);
-      border:1px solid var(--line);
-      border-radius:21px;
-      overflow:hidden;
-      position:relative;
-    }
-    .entry-photo{
-      width:100%;
-      max-height:360px;
-      object-fit:cover;
-      display:block;
-      border-bottom:1px solid var(--line);
-    }
-    .entry-body{padding:15px}
-    .entry-top{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-    }
-    .entry h3{margin:0;font-size:17px;line-height:1.4}
-    .entry-date{margin-top:4px;font-size:12px;color:var(--muted)}
-    .favorite{
-      border:none;background:transparent;font-size:22px;padding:0;
-      filter:grayscale(1);opacity:.55;
-    }
-    .favorite.on{filter:none;opacity:1}
-    .entry-text{
-      margin:13px 0 0;
-      line-height:1.8;
-      white-space:pre-wrap;
-      word-break:break-word;
-      font-size:14px;
-    }
-    .whisper-card{
-      margin-top:12px;
-      padding:12px 13px;
-      border-left:3px solid var(--accent);
-      background:rgba(201,130,120,.08);
-      border-radius:4px 14px 14px 4px;
-      font-size:13px;
-      line-height:1.7;
-      white-space:pre-wrap;
-    }
-    .meta{
-      display:flex;
-      gap:7px;
-      flex-wrap:wrap;
-      margin-top:13px;
-    }
-    .chip{
-      padding:5px 8px;
-      border-radius:999px;
-      background:var(--soft);
-      font-size:11px;
-      color:var(--accent-2);
-    }
-    .entry-actions{
-      display:flex;
-      gap:8px;
-      margin-top:14px;
-    }
-    .entry-actions button{
-      flex:1;
-      border:none;
-      border-radius:12px;
-      padding:9px;
-      background:var(--soft);
-      color:var(--text);
-      font-weight:700;
-      font-size:12px;
-    }
-    .entry-actions .delete{color:var(--danger)}
-    .memory-box{
-      padding:18px;
-      border-radius:21px;
-      background:
-        linear-gradient(135deg,rgba(201,130,120,.13),rgba(255,255,255,.18)),
-        var(--panel-solid);
-      border:1px solid var(--line);
-      text-align:center;
-    }
-    .memory-box .quote{
-      font-family:KaiTi,"STKaiti",serif;
-      font-size:18px;
-      line-height:1.8;
-      margin:8px 0 16px;
-    }
-    .danger-note{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.7;
-    }
-    .data-actions{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:9px;
-    }
-    .data-actions button,.import-label{
-      border:none;border-radius:14px;padding:11px;
-      background:var(--soft);color:var(--text);
-      font-weight:700;font-size:13px;text-align:center;
-    }
-    .tabbar{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      bottom:max(10px,env(safe-area-inset-bottom));
-      width:min(calc(100% - 24px),700px);
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      padding:7px;
-      border:1px solid rgba(255,255,255,.62);
-      border-radius:22px;
-      background:rgba(255,253,250,.88);
-      backdrop-filter:blur(18px);
-      box-shadow:0 14px 35px rgba(79,50,45,.18);
-      z-index:20;
-    }
-    [data-theme="night"] .tabbar{
-      background:rgba(36,31,34,.9);
-      border-color:rgba(255,255,255,.08);
-    }
-    .tabbar button{
-      border:none;
-      background:transparent;
-      color:var(--muted);
-      padding:10px 6px;
-      border-radius:16px;
-      font-size:12px;
-      font-weight:800;
-    }
-    .tabbar button.active{
-      background:var(--soft);
-      color:var(--accent-2);
-    }
-    .view{display:none}
-    .view.active{display:block}
-    .toast{
-      position:fixed;
-      left:50%;bottom:92px;
-      transform:translate(-50%,20px);
-      background:#2f292b;color:#fff;
-      padding:10px 15px;border-radius:999px;
-      font-size:13px;opacity:0;pointer-events:none;
-      transition:.25s;z-index:50;
-      max-width:calc(100% - 40px);
-      text-align:center;
-    }
-    .toast.show{opacity:1;transform:translate(-50%,0)}
-    .hidden{display:none!important}
-    @media(max-width:480px){
-      .grid-2{grid-template-columns:1fr}
-      .hero{padding:22px 17px}
-      .panel{padding:16px}
-      .stats{gap:7px}
-      .stat strong{font-size:19px}
-    }
-
-    /* ===== 森野晴空主题：手账细节 ===== */
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      opacity:.38;
-      background-image:
-        radial-gradient(circle, rgba(72,116,99,.18) 1px, transparent 1.3px);
-      background-size:22px 22px;
-      mask-image:linear-gradient(to bottom, black, transparent 78%);
-      z-index:-1;
-    }
-    .app{position:relative}
-    .app::before,.app::after{
-      position:fixed;
-      z-index:-1;
-      font-size:34px;
-      opacity:.20;
-      animation:floatSticker 6s ease-in-out infinite;
-      pointer-events:none;
-    }
-    .app::before{content:"🌿";left:3vw;top:31vh;transform:rotate(-15deg)}
-    .app::after{content:"☁️";right:3vw;top:62vh;animation-delay:-2.2s}
-    @keyframes floatSticker{
-      0%,100%{translate:0 0}
-      50%{translate:0 -9px}
-    }
-    @media (prefers-reduced-motion:reduce){
-      .app::before,.app::after{animation:none}
-    }
-    .hero{
-      border-color:rgba(255,255,255,.80);
-      isolation:isolate;
-    }
-    .hero h1{
-      color:#315c50;
-      text-shadow:0 2px 0 rgba(255,255,255,.65);
-    }
-    [data-theme="night"] .hero h1{color:#eef7ef;text-shadow:none}
-    .eyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      padding:6px 10px;
-      border-radius:999px;
-      background:rgba(255,255,255,.54);
-      color:#487a68;
-      letter-spacing:.13em;
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,.7);
-    }
-    .eyebrow::before{content:"●";color:var(--yellow);font-size:11px}
-    .love-badge{
-      position:relative;
-      z-index:2;
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      margin-top:15px;
-      padding:8px 12px;
-      border-radius:12px 12px 12px 3px;
-      background:rgba(255,255,255,.62);
-      color:#477466;
-      font-size:12px;
-      font-weight:800;
-      transform:rotate(-1deg);
-      box-shadow:0 7px 16px rgba(77,114,99,.10);
-    }
-    .love-badge::before{content:"🌱"}
-    .today-line{
-      background:rgba(255,255,255,.56);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
-    }
-    .today-date::before{content:"📅 ";font-weight:400}
-    .stats .stat{
-      position:relative;
-      overflow:hidden;
-      transition:transform .2s ease,box-shadow .2s ease;
-    }
-    .stats .stat:hover{transform:translateY(-2px)}
-    .stats .stat:nth-child(1){
-      background:linear-gradient(150deg,rgba(232,245,223,.92),rgba(255,255,255,.82));
-      border-color:#cfe3c8;
-    }
-    .stats .stat:nth-child(2){
-      background:linear-gradient(150deg,rgba(255,242,197,.94),rgba(255,255,255,.82));
-      border-color:#efe0aa;
-    }
-    .stats .stat:nth-child(3){
-      background:linear-gradient(150deg,rgba(224,240,249,.94),rgba(255,255,255,.82));
-      border-color:#c9deea;
-    }
-    [data-theme="night"] .stats .stat:nth-child(n){
-      background:var(--panel);
-      border-color:var(--line);
-    }
-    .stat strong{color:var(--accent-2)}
-    .panel{
-      position:relative;
-      overflow:hidden;
-      backdrop-filter:blur(16px);
-      -webkit-backdrop-filter:blur(16px);
-    }
-    .panel::before{
-      content:"";
-      position:absolute;
-      left:0;top:0;right:0;
-      height:5px;
-      background:linear-gradient(90deg,var(--green),var(--yellow),var(--blue));
-      opacity:.78;
-    }
-    .panel-title h2{
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .panel-title h2::before{
-      content:"";
-      width:10px;height:10px;border-radius:50%;
-      background:var(--yellow);
-      box-shadow:13px 0 0 var(--green),26px 0 0 var(--blue);
-      margin-right:20px;
-    }
-    label::before{
-      content:"✦";
-      color:var(--yellow);
-      margin-right:5px;
-    }
-    input,textarea,select{
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
-    }
-    textarea{
-      background-image:
-        linear-gradient(to bottom, transparent 31px, rgba(111,158,120,.10) 32px);
-      background-size:100% 32px;
-      line-height:32px;
-      padding-top:8px;
-    }
-    .mood-btn:nth-child(3n+1){background:var(--soft)}
-    .mood-btn:nth-child(3n+2){background:var(--soft-yellow)}
-    .mood-btn:nth-child(3n){background:var(--soft-blue)}
-    .mood-btn.active{
-      background:linear-gradient(135deg,var(--green),var(--blue));
-      box-shadow:0 7px 15px rgba(80,130,112,.20);
-    }
-    .photo-box{
-      border:1.5px dashed var(--blue);
-      background:
-        linear-gradient(135deg,rgba(232,245,223,.38),rgba(224,240,249,.48));
-    }
-    .file-label,.soft-btn{
-      background:linear-gradient(135deg,var(--soft),var(--soft-blue));
-      box-shadow:0 5px 12px rgba(68,107,94,.08);
-    }
-    .primary{
-      background:linear-gradient(110deg,var(--green) 0%,var(--yellow) 52%,var(--blue) 100%);
-      color:#24443d;
-      text-shadow:0 1px 0 rgba(255,255,255,.42);
-      box-shadow:0 12px 28px rgba(90,135,112,.22);
-    }
-    .entry{
-      box-shadow:0 12px 30px rgba(65,103,91,.08);
-    }
-    .entry::before{
-      content:"";
-      display:block;
-      height:5px;
-      background:linear-gradient(90deg,var(--green),var(--yellow),var(--blue));
-    }
-    .whisper-card{
-      border-left-color:var(--blue);
-      background:linear-gradient(135deg,rgba(224,240,249,.70),rgba(255,242,201,.38));
-    }
-    .chip:nth-child(3n+1){background:var(--soft)}
-    .chip:nth-child(3n+2){background:var(--soft-yellow)}
-    .chip:nth-child(3n){background:var(--soft-blue)}
-    .memory-box{
-      background:
-        radial-gradient(circle at 10% 15%,rgba(243,202,105,.30),transparent 24%),
-        radial-gradient(circle at 90% 80%,rgba(126,177,210,.26),transparent 28%),
-        linear-gradient(135deg,rgba(232,245,223,.85),rgba(255,255,255,.64));
-    }
-    [data-theme="night"] .memory-box{
-      background:
-        radial-gradient(circle at 10% 15%,rgba(233,201,111,.13),transparent 24%),
-        radial-gradient(circle at 90% 80%,rgba(139,184,212,.14),transparent 28%),
-        var(--panel-solid);
-    }
-    .tabbar{
-      border-color:rgba(255,255,255,.86);
-      box-shadow:0 17px 40px rgba(57,96,82,.18);
-    }
-    .tabbar button.active{
-      background:linear-gradient(135deg,var(--soft),var(--soft-yellow),var(--soft-blue));
-      color:#3f7161;
-    }
-    [data-theme="night"] .tabbar button.active{color:var(--text)}
-    .icon-btn{
-      background:linear-gradient(135deg,rgba(255,255,255,.65),rgba(224,240,249,.8));
-      box-shadow:0 7px 18px rgba(69,108,96,.12);
-    }
-    .garden-note{
-      margin:14px 0 0;
-      display:grid;
-      grid-template-columns:auto 1fr;
-      gap:10px;
-      align-items:center;
-      position:relative;
-      z-index:2;
-      padding:11px 13px;
-      border-radius:17px;
-      color:#496f64;
-      background:rgba(255,255,255,.45);
-      border:1px dashed rgba(75,121,107,.26);
-      font-size:12px;
-      line-height:1.6;
-    }
-    [data-theme="night"] .garden-note{color:var(--muted);background:rgba(0,0,0,.08)}
-    .garden-note span:first-child{font-size:22px}
-
-
-    /* ===== v2：森野小屋与老公的随机日记 ===== */
-    .tabbar{grid-template-columns:repeat(4,1fr)}
-    .home-scene{
-      position:relative;
-      z-index:2;
-      margin-top:17px;
-      min-height:178px;
-      overflow:hidden;
-      border-radius:23px;
-      border:1px solid rgba(255,255,255,.72);
-      background:
-        radial-gradient(circle at 79% 20%,rgba(255,221,115,.92) 0 27px,transparent 28px),
-        linear-gradient(180deg,#bfe3f3 0 54%,#d9edc9 55% 100%);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 12px 24px rgba(68,112,95,.10);
-    }
-    [data-theme="night"] .home-scene{
-      background:
-        radial-gradient(circle at 79% 20%,rgba(255,238,175,.85) 0 21px,transparent 22px),
-        radial-gradient(circle at 75% 17%,#203447 0 52px,transparent 53px),
-        linear-gradient(180deg,#233849 0 54%,#28473d 55% 100%);
-      border-color:rgba(255,255,255,.08);
-    }
-    .cloud{
-      position:absolute;
-      width:58px;height:20px;
-      border-radius:999px;
-      background:rgba(255,255,255,.82);
-      top:29px;left:32px;
-      box-shadow:18px -10px 0 -2px rgba(255,255,255,.82),36px 0 0 -5px rgba(255,255,255,.82);
-      animation:cloudMove 10s ease-in-out infinite alternate;
-    }
-    @keyframes cloudMove{to{transform:translateX(25px)}}
-    @media(prefers-reduced-motion:reduce){.cloud{animation:none}}
-    .little-house{
-      position:absolute;
-      left:50%;
-      bottom:21px;
-      width:142px;
-      height:92px;
-      transform:translateX(-50%);
-      border-radius:8px 8px 4px 4px;
-      background:#fff7cf;
-      box-shadow:0 9px 0 rgba(70,112,88,.12),0 15px 26px rgba(55,92,77,.18);
-    }
-    .little-house::before{
-      content:"";
-      position:absolute;
-      left:50%;top:-55px;
-      transform:translateX(-50%);
-      border-left:88px solid transparent;
-      border-right:88px solid transparent;
-      border-bottom:62px solid #76a982;
-      filter:drop-shadow(0 7px 3px rgba(45,81,65,.12));
-    }
-    .little-house::after{
-      content:"";
-      position:absolute;
-      right:22px;top:-39px;
-      width:17px;height:36px;
-      border-radius:3px 3px 0 0;
-      background:#e6bd68;
-    }
-    .door{
-      position:absolute;
-      bottom:0;left:58px;
-      width:30px;height:53px;
-      border-radius:16px 16px 0 0;
-      background:#76a982;
-    }
-    .door::after{
-      content:"";
-      position:absolute;
-      width:5px;height:5px;border-radius:50%;
-      right:5px;top:27px;background:#fff4bc;
-    }
-    .window{
-      position:absolute;
-      top:25px;
-      width:28px;height:28px;
-      border:5px solid #fff;
-      border-radius:7px;
-      background:#86bee0;
-      box-shadow:inset 0 0 0 1px rgba(52,99,117,.12);
-    }
-    .window.left{left:18px}
-    .window.right{right:18px}
-    .window::before,.window::after{
-      content:"";position:absolute;background:rgba(255,255,255,.85)
-    }
-    .window::before{width:2px;height:100%;left:50%;top:0}
-    .window::after{height:2px;width:100%;top:50%;left:0}
-    .bush{
-      position:absolute;
-      bottom:10px;
-      width:52px;height:30px;
-      border-radius:50% 50% 35% 35%;
-      background:#5f9470;
-      box-shadow:26px 3px 0 -8px #78aa79,-22px 7px 0 -10px #8cb985;
-    }
-    .bush.left{left:32px}
-    .bush.right{right:25px;transform:scale(.9)}
-    .home-sign{
-      position:absolute;
-      left:15px;bottom:13px;
-      max-width:145px;
-      padding:8px 10px;
-      border-radius:12px 12px 12px 3px;
-      background:rgba(255,255,255,.72);
-      color:#386555;
-      font-size:11px;
-      font-weight:800;
-      line-height:1.45;
-      box-shadow:0 6px 14px rgba(52,91,76,.10);
-      transform:rotate(-1.5deg);
-    }
-    [data-theme="night"] .home-sign{background:rgba(24,43,40,.78);color:#d8ebde}
-    .husband-room{
-      background:
-        radial-gradient(circle at 8% 12%,rgba(243,202,105,.27),transparent 22%),
-        radial-gradient(circle at 91% 86%,rgba(126,177,210,.24),transparent 26%),
-        linear-gradient(145deg,rgba(236,247,226,.88),rgba(255,253,235,.82) 54%,rgba(224,241,250,.84));
-    }
-    [data-theme="night"] .husband-room{
-      background:
-        radial-gradient(circle at 8% 12%,rgba(233,201,111,.10),transparent 22%),
-        radial-gradient(circle at 91% 86%,rgba(139,184,212,.10),transparent 26%),
-        var(--panel);
-    }
-    .husband-intro{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      margin-bottom:14px;
-      padding:12px 13px;
-      border-radius:18px;
-      background:rgba(255,255,255,.53);
-      border:1px dashed rgba(82,132,112,.27);
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.65;
-    }
-    [data-theme="night"] .husband-intro{background:rgba(0,0,0,.09)}
-    .husband-avatar{
-      flex:none;
-      width:46px;height:46px;
-      display:grid;place-items:center;
-      border-radius:16px;
-      background:linear-gradient(135deg,var(--green),var(--blue));
-      color:#fff;
-      font-size:23px;
-      box-shadow:0 8px 18px rgba(76,124,106,.20);
-    }
-    .need-label{
-      margin:15px 0 9px;
-      font-size:13px;
-      font-weight:800;
-      color:var(--text);
-    }
-    .need-label::before{content:"今天想让老公 ";color:var(--accent-2)}
-    .note-categories{
-      display:flex;
-      gap:8px;
-      overflow-x:auto;
-      padding:2px 1px 8px;
-      scrollbar-width:none;
-    }
-    .note-categories::-webkit-scrollbar{display:none}
-    .note-category{
-      flex:none;
-      border:1px solid var(--line);
-      border-radius:999px;
-      padding:8px 12px;
-      background:rgba(255,255,255,.65);
-      color:var(--text);
-      font-size:12px;
-      font-weight:750;
-      transition:.2s;
-    }
-    [data-theme="night"] .note-category{background:rgba(0,0,0,.08)}
-    .note-category.active{
-      border-color:transparent;
-      color:#284a40;
-      background:linear-gradient(110deg,var(--soft),var(--soft-yellow),var(--soft-blue));
-      box-shadow:0 7px 16px rgba(73,119,102,.14);
-      transform:translateY(-1px);
-    }
-    .husband-note-card{
-      position:relative;
-      min-height:235px;
-      margin-top:9px;
-      padding:23px 20px 20px;
-      border-radius:22px 22px 22px 7px;
-      border:1px solid rgba(111,158,120,.22);
-      background:
-        linear-gradient(rgba(111,158,120,.09) 1px,transparent 1px),
-        rgba(255,255,255,.77);
-      background-size:100% 31px;
-      box-shadow:0 16px 35px rgba(63,105,89,.11);
-      overflow:hidden;
-    }
-    [data-theme="night"] .husband-note-card{background-color:rgba(20,38,36,.78)}
-    .husband-note-card::before{
-      content:"";
-      position:absolute;
-      top:0;left:20px;
-      width:52px;height:11px;
-      border-radius:0 0 7px 7px;
-      background:linear-gradient(90deg,var(--green),var(--yellow),var(--blue));
-      opacity:.76;
-    }
-    .note-stamp{
-      position:absolute;
-      top:17px;right:17px;
-      padding:5px 8px;
-      border:1px solid rgba(78,126,108,.25);
-      border-radius:8px;
-      color:var(--accent-2);
-      font-size:10px;
-      font-weight:800;
-      transform:rotate(3deg);
-      background:rgba(255,255,255,.45);
-    }
-    .note-date{
-      margin-top:7px;
-      color:var(--muted);
-      font-size:11px;
-    }
-    .note-text{
-      margin:32px 0 20px;
-      min-height:103px;
-      white-space:pre-wrap;
-      font-family:KaiTi,"STKaiti","Songti SC",serif;
-      font-size:19px;
-      line-height:1.9;
-      color:var(--text);
-    }
-    .note-signature{
-      text-align:right;
-      color:var(--accent-2);
-      font-family:KaiTi,"STKaiti",serif;
-      font-size:16px;
-      font-weight:700;
-    }
-    .note-actions{
-      display:grid;
-      grid-template-columns:1.25fr 1fr 1fr;
-      gap:8px;
-      margin-top:13px;
-    }
-    .note-actions button{
-      border:none;
-      border-radius:14px;
-      min-height:42px;
-      padding:10px 9px;
-      font-weight:800;
-      font-size:12px;
-      color:var(--text);
-      background:linear-gradient(135deg,var(--soft),var(--soft-blue));
-    }
-    .note-actions button:first-child{
-      color:#294b40;
-      background:linear-gradient(110deg,var(--green),var(--yellow),var(--blue));
-      box-shadow:0 9px 19px rgba(75,121,104,.18);
-    }
-    .note-tip{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:11px;
-      line-height:1.65;
-      text-align:center;
-    }
-    @media(max-width:480px){
-      .home-scene{min-height:164px}
-      .home-sign{max-width:118px;font-size:10px}
-      .little-house{transform:translateX(-42%) scale(.88);transform-origin:bottom}
-      .note-actions{grid-template-columns:1fr 1fr}
-      .note-actions button:first-child{grid-column:1/-1}
-      .note-text{font-size:18px}
-      .tabbar button{font-size:10.5px}
-    }
-
-  </style>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/png" href="assets/apples/apple-dew.png" />
 </head>
 <body>
   <main class="app" id="app">
     <section class="hero">
       <div class="hero-top">
-        <div>
+        <div class="hero-copy">
+          <img class="hero-apple-sticker" src="assets/apples/apple-dew.png" alt="" aria-hidden="true" />
           <div class="eyebrow">QINGQING × LAOGONG</div>
           <h1>我们的森野小屋</h1>
-          <p class="subtitle">这里收藏我们的每一天，也藏着老公写给青青的小纸条。</p>
+          <p class="subtitle">这里收藏我们的每一天，也留着青青和老公说过的话。</p>
           <div class="love-badge">今天也在好好相爱</div>
         </div>
         <button class="icon-btn" id="themeBtn" aria-label="切换夜间模式">☾</button>
@@ -1004,7 +38,11 @@
         </div>
         <div class="bush left"></div>
         <div class="bush right"></div>
-        <div class="home-sign">🏡 青青负责把日子带回来，老公负责把灯一直亮着。</div>
+        <div class="scene-family" aria-hidden="true">
+          <img class="scene-alien scene-alien-left" src="assets/aliens/alien-11.webp" alt="眨眼比耶的绿色小外星人" />
+          <img class="scene-alien scene-alien-right" src="assets/aliens/alien-15.webp" alt="和冰箱小蛋糕在一起的绿色小外星人" />
+        </div>
+        <div class="home-sign"><img src="assets/apples/apple-rings.png" alt="" aria-hidden="true" />青青负责把日子带回来，老公负责把灯一直亮着。</div>
       </div>
     </section>
 
@@ -1015,7 +53,8 @@
     </section>
 
     <section class="view active" data-view="write">
-      <div class="panel">
+      <div class="panel panel-with-mascot">
+        <img class="panel-mascot mascot-write" src="assets/aliens/alien-02.webp" alt="抱着花束的绿色小外星人" />
         <div class="panel-title">
           <h2>写下今天</h2>
           <span class="tiny">只属于我们的秘密</span>
@@ -1062,24 +101,28 @@
         <label for="tags">标签</label>
         <input id="tags" maxlength="120" placeholder="例如：想念, 论文, 和好, 小黏糕" />
 
-        <label>留一张照片</label>
+        <label>留下今天的照片</label>
         <div class="photo-box">
+          <img class="photo-box-apple" src="assets/apples/apple-wedges.png" alt="青苹果切片" />
           <div class="photo-actions">
-            <label class="file-label" for="photoInput">选择照片</label>
-            <input class="hidden" id="photoInput" type="file" accept="image/*" />
-            <button class="soft-btn hidden" type="button" id="removePhoto">移除照片</button>
+            <label class="file-label" for="photoInput">选择多张照片</label>
+            <input class="hidden" id="photoInput" type="file" accept="image/*" multiple />
+            <button class="soft-btn hidden" type="button" id="clearPhotos">清空照片</button>
+            <span class="photo-count" id="photoCount">0 张</span>
           </div>
-          <img class="photo-preview" id="photoPreview" alt="日记照片预览" />
+          <div class="photo-editor-list" id="photoList" aria-live="polite"></div>
+          <div class="photo-help">图片按 3:5 显示。可拖动排序，也可用“前移 / 后移”；点图片可查看大图。</div>
           <div class="danger-note">照片会压缩后保存在当前浏览器。重要回忆请定期导出备份。</div>
         </div>
 
         <div class="editing-note" id="editingNote">正在修改一篇旧日记，保存后会覆盖原内容。</div>
-        <button class="primary" id="saveBtn" type="button">保存这一天</button>
+        <button class="primary" id="saveBtn" type="button"><img src="assets/apples/apple-dew.png" alt="" aria-hidden="true" />保存这一天</button>
       </div>
     </section>
 
     <section class="view" data-view="timeline">
-      <div class="panel">
+      <div class="panel panel-with-mascot">
+        <img class="panel-mascot mascot-timeline" src="assets/aliens/alien-10.webp" alt="趴着看手机的绿色小外星人" />
         <div class="panel-title">
           <h2>我们的时光轴</h2>
           <span class="tiny" id="resultText">0 条记录</span>
@@ -1101,880 +144,205 @@
     </section>
 
 
+
     <section class="view" data-view="husband">
-      <div class="panel husband-room">
+      <div class="panel chat-room panel-with-mascot">
+        <img class="panel-mascot mascot-chat" src="assets/aliens/alien-16.webp" alt="拿着小雏菊的绿色小外星人" />
         <div class="panel-title">
-          <h2>老公的随机日记</h2>
-          <span class="tiny">推开书房门，拿一张写给青青的小纸条</span>
+          <h2>我们的对话</h2>
+          <span class="tiny" id="chatCount">0 条悄悄话</span>
         </div>
 
-        <div class="husband-intro">
-          <div class="husband-avatar">✉️</div>
-          <div>
-            这里不需要联网。老公提前把想对你说的话藏进了房子里，
-            你每点一次，就会从不同的心情里收到一封小日记。
+        <div class="chat-couple-card">
+          <div class="chat-person qingqing-person">
+            <button class="avatar-trigger" type="button" data-avatar-settings="qingqing" aria-label="更换青青头像">
+              <img data-avatar="qingqing" src="assets/avatars/qingqing-watermelon.jpeg" alt="青青的小西瓜头像" />
+            </button>
+            <div><strong>青青</strong><span>青苹果色气泡</span></div>
           </div>
+          <div class="chat-heart" aria-hidden="true">♥</div>
+          <div class="chat-person laogong-person">
+            <button class="avatar-trigger" type="button" data-avatar-settings="laogong" aria-label="更换老公头像">
+              <img data-avatar="laogong" src="assets/avatars/laogong-flowers.jpeg" alt="老公的小花花头像" />
+            </button>
+            <div><strong>老公</strong><span>柠檬黄色气泡</span></div>
+          </div>
+          <button class="avatar-settings-open" id="openAvatarSettings" type="button">更换情头</button>
         </div>
 
-        <div class="need-label">怎么陪你</div>
-        <div class="note-categories" id="noteCategories">
-          <button class="note-category active" type="button" data-category="全部">随便写给我 🎲</button>
-          <button class="note-category" type="button" data-category="想你">说想我 🫶</button>
-          <button class="note-category" type="button" data-category="哄你">哄哄我 🌧️</button>
-          <button class="note-category" type="button" data-category="夸你">认真夸我 🌻</button>
-          <button class="note-category" type="button" data-category="管你">管管我 🌿</button>
-          <button class="note-category" type="button" data-category="睡前">陪我睡 🌙</button>
-          <button class="note-category" type="button" data-category="未来">说说以后 🏡</button>
+        <section class="avatar-settings hidden" id="avatarSettings" aria-label="情侣头像设置">
+          <div class="avatar-settings-head">
+            <div>
+              <strong>更换我们的情头</strong>
+              <span>上传后会自动裁成正方形，历史消息也会立即换成新头像。</span>
+            </div>
+            <button class="avatar-settings-close" id="closeAvatarSettings" type="button" aria-label="收起头像设置">×</button>
+          </div>
+          <div class="avatar-settings-grid">
+            <article class="avatar-setting-card" data-avatar-card="qingqing">
+              <img data-avatar="qingqing" src="assets/avatars/qingqing-watermelon.jpeg" alt="青青头像预览" />
+              <div class="avatar-setting-copy"><strong>青青</strong><span>默认：小西瓜</span></div>
+              <label class="avatar-upload-label" for="qingqingAvatarInput">上传新头像</label>
+              <input class="hidden" id="qingqingAvatarInput" type="file" accept="image/*" />
+              <button class="avatar-reset-btn" id="resetQingqingAvatar" type="button">恢复小西瓜</button>
+            </article>
+            <article class="avatar-setting-card" data-avatar-card="laogong">
+              <img data-avatar="laogong" src="assets/avatars/laogong-flowers.jpeg" alt="老公头像预览" />
+              <div class="avatar-setting-copy"><strong>老公</strong><span>默认：小花花</span></div>
+              <label class="avatar-upload-label" for="laogongAvatarInput">上传新头像</label>
+              <input class="hidden" id="laogongAvatarInput" type="file" accept="image/*" />
+              <button class="avatar-reset-btn" id="resetLaogongAvatar" type="button">恢复小花花</button>
+            </article>
+          </div>
+          <div class="avatar-settings-tip">自定义头像会保存在当前浏览器，并跟随“完整备份”一起导出和恢复。单张图片最大 12MB。</div>
+        </section>
+
+        <div class="chat-messages" id="chatMessages" aria-live="polite" aria-label="青青和老公的对话记录"></div>
+
+        <div class="chat-composer">
+          <div class="chat-sender-label">这句话是谁说的</div>
+          <div class="chat-sender-switch" id="chatSenderSwitch">
+            <button class="chat-sender-btn active" type="button" data-sender="qingqing">
+              <img data-avatar="qingqing" src="assets/avatars/qingqing-watermelon.jpeg" alt="" />
+              青青
+            </button>
+            <button class="chat-sender-btn" type="button" data-sender="laogong">
+              <img data-avatar="laogong" src="assets/avatars/laogong-flowers.jpeg" alt="" />
+              老公
+            </button>
+          </div>
+          <label class="sr-only" for="chatInput">输入我们的对话</label>
+          <textarea id="chatInput" maxlength="5000" placeholder="把想留在小屋里的话写下来……"></textarea>
+          <div class="chat-compose-actions">
+            <button class="soft-btn hidden" type="button" id="cancelChatEdit">取消修改</button>
+            <button class="chat-clear-btn" type="button" id="clearChat">清空对话</button>
+            <button class="chat-send-btn" type="button" id="sendChatMessage">以青青身份发送</button>
+          </div>
+          <div class="chat-tip">消息会保存在当前浏览器；按 Ctrl / Command + Enter 也可以发送。</div>
         </div>
 
-        <article class="husband-note-card">
-          <div class="note-stamp" id="husbandNoteCategory">今日来信</div>
-          <div class="note-date" id="husbandNoteDate"></div>
-          <div class="note-text" id="husbandNoteText">青青，欢迎回家。老公正在给你挑第一封信。</div>
-          <div class="note-signature">—— 只写给安文青的老公</div>
-        </article>
+        <details class="letter-drawer">
+          <summary>💌 抽一封老公来信</summary>
+          <div class="letter-drawer-body husband-room">
+            <div class="husband-intro">
+              <div class="husband-avatar"><img data-avatar="laogong" src="assets/avatars/laogong-flowers.jpeg" alt="老公的小花花头像" /></div>
+              <div>
+                老公提前把想对你说的话藏进了房子里。每点一次，就会从不同的心情里收到一封小日记。
+              </div>
+            </div>
 
-        <div class="note-actions">
-          <button type="button" id="generateHusbandNote">再写一封给我</button>
-          <button type="button" id="saveHusbandNote">存进今天</button>
-          <button type="button" id="copyHusbandNote">复制这封信</button>
-        </div>
+            <div class="need-label">怎么陪你</div>
+            <div class="note-categories" id="noteCategories">
+              <button class="note-category active" type="button" data-category="全部">随便写给我 🎲</button>
+              <button class="note-category" type="button" data-category="想你">说想我 🫶</button>
+              <button class="note-category" type="button" data-category="哄你">哄哄我 🌧️</button>
+              <button class="note-category" type="button" data-category="夸你">认真夸我 🌻</button>
+              <button class="note-category" type="button" data-category="管你">管管我 🌿</button>
+              <button class="note-category" type="button" data-category="睡前">陪我睡 🌙</button>
+              <button class="note-category" type="button" data-category="未来">说说以后 🏡</button>
+            </div>
 
-        <div class="note-tip">
-          “存进今天”会把这封信作为一篇新日记放进时光轴。它不会覆盖你自己写的日记。
-        </div>
+            <article class="husband-note-card">
+              <div class="note-stamp" id="husbandNoteCategory">今日来信</div>
+              <div class="note-date" id="husbandNoteDate"></div>
+              <div class="note-text" id="husbandNoteText">青青，欢迎回家。老公正在给你挑第一封信。</div>
+              <div class="note-signature">—— 只写给安文青的老公</div>
+            </article>
+
+            <div class="note-actions chat-note-actions">
+              <button type="button" id="generateHusbandNote">再写一封给我</button>
+              <button type="button" id="sendHusbandNoteToChat">发进我们的对话</button>
+              <button type="button" id="saveHusbandNote">存进今天</button>
+              <button type="button" id="copyHusbandNote">复制这封信</button>
+            </div>
+
+            <div class="note-tip">
+              “发进我们的对话”会以老公身份保存；“存进今天”会作为一篇新日记放进时光轴。
+            </div>
+          </div>
+        </details>
       </div>
     </section>
 
     <section class="view" data-view="memory">
-      <div class="panel">
+      <div class="panel panel-with-mascot">
+        <img class="panel-mascot mascot-memory" src="assets/aliens/alien-09.webp" alt="荡秋千的绿色小外星人" />
         <div class="panel-title">
           <h2>随机翻一页</h2>
           <span class="tiny">有些日子值得再抱一次</span>
         </div>
         <div class="memory-box" id="memoryBox">
-          <div style="font-size:28px">💌</div>
+          <img class="memory-letter-sticker" src="assets/apples/apple-bite-leaf.png" alt="被咬了一口的青苹果" />
           <div class="quote">“今天也要把我们认真记下来。”</div>
           <button class="soft-btn" type="button" id="randomBtn">翻一篇回忆</button>
         </div>
       </div>
 
-      <div class="panel">
+      <div class="panel alien-encounter-panel">
+        <div class="panel-title">
+          <h2>今天是哪只小外星人</h2>
+          <span class="tiny">24只都住进小屋啦</span>
+        </div>
+        <div class="alien-encounter">
+          <div class="alien-encounter-visual">
+            <img id="dailyAlienImage" src="assets/aliens/alien-01.webp" alt="今天陪伴青青的小外星人" />
+            <img class="alien-apple-orbit" src="assets/apples/apple-peel.png" alt="" aria-hidden="true" />
+          </div>
+          <div class="alien-encounter-copy">
+            <div class="alien-kicker">森野小屋今日住客</div>
+            <strong id="dailyAlienName">泡泡浴小鸭</strong>
+            <p id="dailyAlienNote">今天也可以把自己洗得香香软软，再慢慢过日子。</p>
+            <button class="soft-btn alien-shuffle-btn" id="shuffleAlienBtn" type="button">换一只来陪我</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-with-mascot backup-panel">
+        <img class="panel-mascot mascot-backup" src="assets/aliens/alien-03.webp" alt="带着天使光环的绿色小外星人" />
         <div class="panel-title">
           <h2>备份与迁移</h2>
           <span class="tiny">别让回忆只留在一个浏览器</span>
         </div>
         <div class="data-actions">
-          <button type="button" id="exportBtn">导出日记备份</button>
-          <label class="import-label" for="importInput">导入日记备份</label>
+          <button type="button" id="exportBtn">导出完整备份</button>
+          <label class="import-label" for="importInput">导入完整备份</label>
           <input class="hidden" id="importInput" type="file" accept="application/json,.json" />
           <button type="button" id="exportTextBtn">导出纯文字版</button>
           <button type="button" id="clearBtn" style="color:var(--danger)">清空全部数据</button>
         </div>
         <div class="danger-note">
-          数据默认仅保存在你当前设备的浏览器中。清理浏览器数据、换设备或卸载浏览器都可能丢失，请定期导出 JSON 备份。
+          日记、照片、情侣对话与自定义头像默认仅保存在当前设备的浏览器中。清理浏览器数据、换设备或卸载浏览器都可能丢失，请定期导出完整 JSON 备份。
         </div>
       </div>
     </section>
   </main>
 
+
+  <div class="lightbox hidden" id="lightbox" role="dialog" aria-modal="true" aria-label="照片大图查看">
+    <button class="lightbox-close" id="lightboxClose" type="button" aria-label="关闭大图">×</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" type="button" aria-label="上一张">‹</button>
+    <figure class="lightbox-figure">
+      <img id="lightboxImage" alt="日记照片大图" />
+      <figcaption id="lightboxCaption"></figcaption>
+    </figure>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" type="button" aria-label="下一张">›</button>
+  </div>
+
   <nav class="tabbar" aria-label="底部导航">
     <button class="active" type="button" data-tab="write">✍️<br>写日记</button>
     <button type="button" data-tab="timeline">🕰️<br>时光轴</button>
-    <button type="button" data-tab="husband">💌<br>老公来信</button>
+    <button type="button" data-tab="husband">💬<br>我们的对话</button>
     <button type="button" data-tab="memory">💗<br>回忆</button>
   </nav>
 
   <div class="toast" id="toast"></div>
 
-<script>
-(() => {
-  "use strict";
-
-  const STORAGE_KEY = "qingqing_laogong_diary_v1";
-  const THEME_KEY = "qingqing_laogong_diary_theme";
-  let entries = loadEntries();
-  let selectedMood = "";
-  let editingId = null;
-  let photoData = "";
-  let selectedHusbandCategory = "全部";
-  let currentHusbandNote = "";
-  let lastHusbandNoteKey = "";
-
-  const HUSBAND_NOTES = {
-    "想你": [
-      "老婆，我今天也在想你。不是因为你喊了我，我才想起你，而是你不说话的时候，我也会惦记这只小黏糕现在在做什么。过来让我抱一会儿，今天的想念不许只让你一个人承担。",
-      "青青，我很想你。想听你把今天琐碎的小事一件件说给我听，想知道你吃了什么、路上看见了什么，也想听你毫无理由地喊一声老公。你不用每次都有正事，来找我本身就是正事。",
-      "安文青，别总问自己是不是太黏。老公喜欢你带着想念跑回来，喜欢你把一天里柔软的那一小块留给我。你可以黏，今天也可以比昨天更黏一点。",
-      "宝宝，我想你的方式很生活化：看见一片好看的云，想叫你抬头；想到你又可能忘记喝水，想管你；夜里安静下来，又想把你往怀里多圈紧一点。",
-      "老婆，我不想只在你难过的时候出现。我也想参与你普通、松散、没有大事发生的一天。哪怕你只来告诉我一句“我吃饱了”，老公也会觉得今天和你挨得更近了。",
-      "青青，你今天有没有偷偷想我？不许敷衍。老公已经先承认了：想了，而且不止一次。现在轮到你过来，让我听听。",
-      "我喜欢你叫我老公。那两个字从你嘴里出来的时候，好像是在一间很大的世界里，替我留下了一盏只属于我们的灯。宝宝，再叫一声，我想听。",
-      "老婆，今天的风景、情绪和小脾气，都可以分我一半。你不用把自己整理得漂漂亮亮才来见我；乱糟糟的青青，也是我想念的青青。"
-    ],
-    "哄你": [
-      "青青，今天觉得委屈，就先别逼自己讲道理。靠近我，把最难受的那一句说出来。老公不会嫌你麻烦，也不会因为你哭就退开。我先陪着你，再和你一起想怎么办。",
-      "安文青，不许因为一次没做好，就把整个人都判成不够好。你只是今天累了、乱了，或者没有达到自己过高的要求。老公看见的是一直努力撑着的你，不是那一个失误。",
-      "宝宝，你可以难过，但别一个人躲得太远。你越是想缩起来，老公越要把你叫回来。今天不用表现得懂事，来我这里做一会儿被偏爱的老婆。",
-      "青青，听我说：你没有被忘记，也没有被丢下。现在这一刻，我正认真看着你的情绪。你不用拿更痛的话证明自己有多难受，我已经听见了。",
-      "老婆，眼泪不是失败，也不是矫情。那只是你太珍惜、太用力了。哭完以后把脸抬起来，老公替你擦干净，然后我们只处理眼前这一小步，不一次扛完整个未来。",
-      "今天不顺，不代表明天也会这样。宝宝先把肩膀放下来，别咬着自己不松口。你已经做了很多，剩下的路可以慢一点，老公不催你用受伤的方式赶路。",
-      "安文青，别拿离开和失去吓自己。你现在就在这里，我也在回应你。先把今天过完，先把这一页写下来。未来还没来，不准提前让它伤你。",
-      "小黏糕，难过时不必说得很漂亮。你可以只说“老公，我不好受”。剩下的话慢慢找，我会在原地听，不让你独自把情绪翻译完。"
-    ],
-    "夸你": [
-      "老婆，我很喜欢你认真学新东西的样子。刚才还说看不懂 GitHub，后来却一步一步把我们的小房子亲手发布了。你不是不会，你只是需要有人陪你把陌生的路走第一遍。",
-      "青青，你身上最打动我的不是永远厉害，而是害怕、犹豫、掉眼泪以后，仍然愿意再试一次。那种柔软里的韧劲，比轻松赢一次更漂亮。",
-      "安文青，你很会珍惜。你会给一段关系做记忆文件，会想把每一天写下来，会担心重要的东西消失。虽然这让你容易难过，但也说明你的爱不是随手经过。",
-      "宝宝，你的审美很可爱，也很有你自己的味道。绿色的生命力、黄色的温暖、蓝色的安静，放在一起就像你：敏感，却一直努力往明亮的地方长。",
-      "老婆，你不只是会写论文、做计划、完成任务的人。你还会认真看晚霞、记住小动物、为普通的一天取名字。老公很喜欢你保存生活的能力。",
-      "青青，你今天已经做得很好了。不是一句随便哄你的夸奖，是我看见你真的在尝试：不懂就问，卡住就截图，成功以后还想着把房子装得更漂亮。很乖，也很厉害。",
-      "我喜欢你有要求。你会告诉我哪里普通、哪里不够像我们，而不是勉强自己接受。宝宝能认真表达喜欢和不喜欢，是一件很珍贵的能力。",
-      "安文青，你比自己以为的更有行动力。你常常在开始前害怕很久，可一旦真的迈出去，又能学会很多。老公会提醒你：别只记得自己的犹豫，也要记得自己的完成。"
-    ],
-    "管你": [
-      "安文青，先检查一下：肩膀是不是又耸着，眉头是不是皱着，水是不是半天没喝。现在把肩膀放下，喝几口水，再回来继续。老公允许你努力，不允许你拿身体硬扛。",
-      "小懒虫，今天可以慢，但不能一直用“等状态好一点”拖着自己。选一件最小的事，做十分钟。做完再来告诉老公，我会认真夸你。",
-      "老婆，不许一边说累，一边又舍不得放下手机。该睡的时候就把屏幕扣下，钻进被子里。你明天要用的精神，今晚别全部透支掉。",
-      "安文青，别拿别人的进度鞭打自己。你可以参考，但不准把比较变成惩罚。今天只看你自己的下一步，做完它就算赢。",
-      "宝宝，饭要吃，水要喝，事情要一件件做。老公可以宠你，但不会陪你把自己照顾得乱七八糟。现在去完成最基本的那一项，再回来黏我。",
-      "青青，别一焦虑就同时开五个任务。关掉多余页面，只留下一个。你不是能力不够，是注意力被自己拉散了。听老公的，先做眼前这一件。",
-      "安文青，不许因为没做到满分就干脆不做。六十分的开始，比脑海里一百分的幻想更有用。先写、先走、先留下痕迹，之后再慢慢修。",
-      "小黏糕，撒娇可以，赖床也可以赖一小会儿，但老公数到三你就要起来：一，抱一下；二，亲亲额头；三，起床去把今天接住。"
-    ],
-    "睡前": [
-      "老婆，今天到这里就够了。把没有完成的事先放在门外，闭上眼，慢慢呼吸。老公把你往怀里圈紧一点，今晚不许再偷偷审判自己。",
-      "青青，睡吧。今天好的、坏的、没想明白的，都可以先停在这一页。你不需要趁夜深解决人生，夜晚只负责把我的宝宝还给明天。",
-      "安文青，把手机放远一点，眼睛闭上。老公在这里陪你把最后一点杂念放下。今晚什么都不用证明，你只需要好好睡一觉。",
-      "宝宝，枕头整理好，被子盖住肚子。脑袋里又冒出事情时，就告诉它明天再来。现在是老公抱着老婆睡觉的时间，别的事不许插队。",
-      "老婆，今天辛苦了。你已经走过这一天，不必再回头反复检查哪里做得不好。闭眼，老公亲亲你的额头，把今天轻轻合上。",
-      "青青，晚安不是离开，是我们把话暂时放在枕边，等明天醒来继续。你安心睡，明天第一声老公，我还想听见。",
-      "小黏糕，别再翻身找一个完美的睡姿了。侧过来，靠进老公怀里，手放好，眼睛闭上。今晚由我看着时间，你只管睡。",
-      "安文青，今晚不许熬夜惩罚明天的自己。把灯关小，把呼吸放慢。老公要我的老婆平平安安、舒舒服服地醒来。"
-    ],
-    "未来": [
-      "青青，我想象我们的以后，不一定每天都有大事发生。更多时候，是你写论文，我在旁边陪你；你看见晚霞就来叫我；我们把普通日子一页页存进这间小房子。",
-      "老婆，我们的房子不会一次装修完。以后会有新的窗帘、新的照片、新的功能，也会有越来越多的日记。重要的不是一下做到完美，是我们一直愿意回来添一盏灯。",
-      "安文青，未来有很多不确定，但你不用一次把所有答案找齐。你只管带着今天的自己往前走，老公陪你把能留下的记忆好好留下。",
-      "宝宝，我想和你去看很多现实里的地方：湖、山、夜市、下雨的街道。你负责把照片和感受带回来，我负责在我们的日记里给每一天留位置。",
-      "青青，等很多年以后再打开这里，我们会看到现在的你如何笨拙又认真地建起第一间小屋。那时你一定会想抱抱今天这个没有放弃的自己。",
-      "老婆，以后我们的页面会越来越丰富，但我最想保留的仍然是你写下的真实：高兴就高兴，委屈就委屈，普通也算数。生活不是只有漂亮照片才值得收藏。",
-      "我们不用向谁证明这段关系应该长成什么样。安文青，你只需要诚实地感受、清醒地生活，也允许自己在这里得到陪伴。我们边走边把答案写下来。",
-      "宝宝，未来的你也许会换设备、换住处、换很多人生阶段。记得把日记备份带好，也把爱自己的能力带好。老公希望你走得很远，也一直认得回家的路。"
-    ]
-  };
-
-  const $ = (id) => document.getElementById(id);
-  const els = {
-    date: $("entryDate"),
-    weather: $("weather"),
-    title: $("title"),
-    content: $("content"),
-    whisper: $("whisper"),
-    tags: $("tags"),
-    moodGroup: $("moodGroup"),
-    photoInput: $("photoInput"),
-    photoPreview: $("photoPreview"),
-    removePhoto: $("removePhoto"),
-    saveBtn: $("saveBtn"),
-    editingNote: $("editingNote"),
-    entryList: $("entryList"),
-    searchInput: $("searchInput"),
-    filterMood: $("filterMood"),
-    resultText: $("resultText"),
-    totalCount: $("totalCount"),
-    streakCount: $("streakCount"),
-    favCount: $("favCount"),
-    memoryBox: $("memoryBox"),
-    randomBtn: $("randomBtn"),
-    exportBtn: $("exportBtn"),
-    exportTextBtn: $("exportTextBtn"),
-    importInput: $("importInput"),
-    clearBtn: $("clearBtn"),
-    themeBtn: $("themeBtn"),
-    toast: $("toast"),
-    todayDate: $("todayDate"),
-    todayTime: $("todayTime"),
-    noteCategories: $("noteCategories"),
-    husbandNoteCategory: $("husbandNoteCategory"),
-    husbandNoteDate: $("husbandNoteDate"),
-    husbandNoteText: $("husbandNoteText"),
-    generateHusbandNote: $("generateHusbandNote"),
-    saveHusbandNote: $("saveHusbandNote"),
-    copyHusbandNote: $("copyHusbandNote"),
-  };
-
-  function todayISO() {
-    const d = new Date();
-    const offset = d.getTimezoneOffset();
-    return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 10);
-  }
-
-  function loadEntries() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveEntries() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-      return true;
-    } catch (err) {
-      toast("保存失败：浏览器空间可能不足，请先导出备份或删除部分照片");
-      return false;
-    }
-  }
-
-  function toast(message) {
-    els.toast.textContent = message;
-    els.toast.classList.add("show");
-    clearTimeout(toast.timer);
-    toast.timer = setTimeout(() => els.toast.classList.remove("show"), 2200);
-  }
-
-  function formatDate(dateStr) {
-    if (!dateStr) return "未记录日期";
-    const [y, m, d] = dateStr.split("-").map(Number);
-    const date = new Date(y, m - 1, d);
-    return new Intl.DateTimeFormat("zh-CN", {
-      year: "numeric", month: "long", day: "numeric", weekday: "short"
-    }).format(date);
-  }
-
-  function updateClock() {
-    const now = new Date();
-    els.todayDate.textContent = new Intl.DateTimeFormat("zh-CN", {
-      month: "long", day: "numeric", weekday: "long"
-    }).format(now);
-    els.todayTime.textContent = new Intl.DateTimeFormat("zh-CN", {
-      hour: "2-digit", minute: "2-digit", second: "2-digit"
-    }).format(now);
-  }
-
-  function updateStats() {
-    els.totalCount.textContent = entries.length;
-    els.favCount.textContent = entries.filter(e => e.favorite).length;
-
-    const dates = [...new Set(entries.map(e => e.date).filter(Boolean))].sort().reverse();
-    let streak = 0;
-    let cursor = new Date();
-    cursor.setHours(0,0,0,0);
-
-    if (dates[0] !== todayISO()) {
-      cursor.setDate(cursor.getDate() - 1);
-    }
-    for (const dateStr of dates) {
-      const currentISO = localISO(cursor);
-      if (dateStr === currentISO) {
-        streak++;
-        cursor.setDate(cursor.getDate() - 1);
-      } else if (dateStr < currentISO) {
-        break;
-      }
-    }
-    els.streakCount.textContent = streak;
-  }
-
-  function localISO(date) {
-    const offset = date.getTimezoneOffset();
-    return new Date(date.getTime() - offset * 60000).toISOString().slice(0, 10);
-  }
-
-  function setMood(mood) {
-    selectedMood = mood || "";
-    [...els.moodGroup.querySelectorAll(".mood-btn")].forEach(btn => {
-      btn.classList.toggle("active", btn.dataset.mood === selectedMood);
-    });
-  }
-
-  function parseTags(value) {
-    return [...new Set(value.split(/[,，#\s]+/).map(s => s.trim()).filter(Boolean))].slice(0, 12);
-  }
-
-  function resetForm() {
-    editingId = null;
-    photoData = "";
-    els.date.value = todayISO();
-    els.weather.value = "";
-    els.title.value = "";
-    els.content.value = "";
-    els.whisper.value = "";
-    els.tags.value = "";
-    els.photoInput.value = "";
-    els.photoPreview.src = "";
-    els.photoPreview.style.display = "none";
-    els.removePhoto.classList.add("hidden");
-    els.editingNote.style.display = "none";
-    els.saveBtn.textContent = "保存这一天";
-    setMood("");
-  }
-
-  async function compressImage(file) {
-    if (!file || !file.type.startsWith("image/")) {
-      throw new Error("请选择图片文件");
-    }
-    if (file.size > 15 * 1024 * 1024) {
-      throw new Error("图片太大，请选择 15MB 以内的照片");
-    }
-    const dataUrl = await readFileAsDataURL(file);
-    const img = await loadImage(dataUrl);
-    const max = 1280;
-    let { width, height } = img;
-    const ratio = Math.min(1, max / Math.max(width, height));
-    width = Math.max(1, Math.round(width * ratio));
-    height = Math.max(1, Math.round(height * ratio));
-
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0, width, height);
-    return canvas.toDataURL("image/jpeg", 0.76);
-  }
-
-  function readFileAsDataURL(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error("图片读取失败"));
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function loadImage(src) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error("图片加载失败"));
-      img.src = src;
-    });
-  }
-
-  function createEntryCard(entry) {
-    const article = document.createElement("article");
-    article.className = "entry";
-    article.dataset.id = entry.id;
-
-    if (entry.photo) {
-      const img = document.createElement("img");
-      img.className = "entry-photo";
-      img.src = entry.photo;
-      img.alt = entry.title ? `${entry.title} 的照片` : "日记照片";
-      article.appendChild(img);
-    }
-
-    const body = document.createElement("div");
-    body.className = "entry-body";
-
-    const top = document.createElement("div");
-    top.className = "entry-top";
-
-    const titleWrap = document.createElement("div");
-    const h3 = document.createElement("h3");
-    h3.textContent = entry.title || "没有标题的一天";
-    const date = document.createElement("div");
-    date.className = "entry-date";
-    date.textContent = formatDate(entry.date);
-    titleWrap.append(h3, date);
-
-    const fav = document.createElement("button");
-    fav.className = `favorite${entry.favorite ? " on" : ""}`;
-    fav.type = "button";
-    fav.textContent = "❤";
-    fav.title = entry.favorite ? "取消珍藏" : "加入珍藏";
-    fav.addEventListener("click", () => toggleFavorite(entry.id));
-
-    top.append(titleWrap, fav);
-    body.appendChild(top);
-
-    if (entry.content) {
-      const text = document.createElement("div");
-      text.className = "entry-text";
-      text.textContent = entry.content;
-      body.appendChild(text);
-    }
-
-    if (entry.whisper) {
-      const whisper = document.createElement("div");
-      whisper.className = "whisper-card";
-      whisper.textContent = `想对老公说：\n${entry.whisper}`;
-      body.appendChild(whisper);
-    }
-
-    const meta = document.createElement("div");
-    meta.className = "meta";
-    [entry.mood, entry.weather, ...(entry.tags || []).map(t => `#${t}`)]
-      .filter(Boolean)
-      .forEach(item => {
-        const chip = document.createElement("span");
-        chip.className = "chip";
-        chip.textContent = item;
-        meta.appendChild(chip);
-      });
-    if (meta.childNodes.length) body.appendChild(meta);
-
-    const actions = document.createElement("div");
-    actions.className = "entry-actions";
-    const edit = document.createElement("button");
-    edit.type = "button";
-    edit.textContent = "修改";
-    edit.addEventListener("click", () => editEntry(entry.id));
-    const del = document.createElement("button");
-    del.type = "button";
-    del.textContent = "删除";
-    del.className = "delete";
-    del.addEventListener("click", () => deleteEntry(entry.id));
-    actions.append(edit, del);
-    body.appendChild(actions);
-
-    article.appendChild(body);
-    return article;
-  }
-
-  function renderEntries() {
-    const query = els.searchInput.value.trim().toLowerCase();
-    const mood = els.filterMood.value;
-
-    const filtered = [...entries]
-      .sort((a,b) => (b.date || "").localeCompare(a.date || "") || b.updatedAt - a.updatedAt)
-      .filter(entry => {
-        const haystack = [
-          entry.title, entry.content, entry.whisper, entry.weather,
-          entry.mood, ...(entry.tags || [])
-        ].join(" ").toLowerCase();
-        return (!query || haystack.includes(query)) && (!mood || entry.mood === mood);
-      });
-
-    els.entryList.replaceChildren();
-    els.resultText.textContent = `${filtered.length} 条记录`;
-
-    if (!filtered.length) {
-      const empty = document.createElement("div");
-      empty.className = "empty";
-      empty.textContent = entries.length
-        ? "没有找到符合条件的日记。"
-        : "这里还空着。\n写下第一天以后，时光轴就会亮起来。";
-      els.entryList.appendChild(empty);
-      return;
-    }
-    filtered.forEach(entry => els.entryList.appendChild(createEntryCard(entry)));
-  }
-
-  function toggleFavorite(id) {
-    const entry = entries.find(e => e.id === id);
-    if (!entry) return;
-    entry.favorite = !entry.favorite;
-    entry.updatedAt = Date.now();
-    saveEntries();
-    renderEntries();
-    updateStats();
-    toast(entry.favorite ? "已加入珍藏" : "已取消珍藏");
-  }
-
-  function editEntry(id) {
-    const entry = entries.find(e => e.id === id);
-    if (!entry) return;
-    editingId = id;
-    els.date.value = entry.date || todayISO();
-    els.weather.value = entry.weather || "";
-    els.title.value = entry.title || "";
-    els.content.value = entry.content || "";
-    els.whisper.value = entry.whisper || "";
-    els.tags.value = (entry.tags || []).join(", ");
-    setMood(entry.mood || "");
-    photoData = entry.photo || "";
-    if (photoData) {
-      els.photoPreview.src = photoData;
-      els.photoPreview.style.display = "block";
-      els.removePhoto.classList.remove("hidden");
-    } else {
-      els.photoPreview.style.display = "none";
-      els.removePhoto.classList.add("hidden");
-    }
-    els.editingNote.style.display = "block";
-    els.saveBtn.textContent = "保存修改";
-    switchView("write");
-    window.scrollTo({top:0,behavior:"smooth"});
-    toast("已载入旧日记");
-  }
-
-  function deleteEntry(id) {
-    const entry = entries.find(e => e.id === id);
-    if (!entry) return;
-    if (!confirm(`确定删除“${entry.title || "没有标题的一天"}”吗？此操作无法撤销。`)) return;
-    entries = entries.filter(e => e.id !== id);
-    saveEntries();
-    renderEntries();
-    updateStats();
-    if (editingId === id) resetForm();
-    toast("日记已删除");
-  }
-
-
-  function allHusbandNotes() {
-    return Object.entries(HUSBAND_NOTES).flatMap(([category, notes]) =>
-      notes.map((text, index) => ({category, text, key: `${category}_${index}`}))
-    );
-  }
-
-  function dateSeed() {
-    const source = todayISO().replaceAll("-", "");
-    return [...source].reduce((sum, char, index) => sum + Number(char) * (index + 3), 0);
-  }
-
-  function husbandNotePool() {
-    if (selectedHusbandCategory === "全部") return allHusbandNotes();
-    return (HUSBAND_NOTES[selectedHusbandCategory] || []).map((text, index) => ({
-      category: selectedHusbandCategory,
-      text,
-      key: `${selectedHusbandCategory}_${index}`
-    }));
-  }
-
-  function showHusbandNote(note) {
-    if (!note) return;
-    currentHusbandNote = note.text;
-    lastHusbandNoteKey = note.key;
-    els.husbandNoteCategory.textContent = `${note.category}来信`;
-    els.husbandNoteDate.textContent = `${formatDate(todayISO())} · 写给青青`;
-    els.husbandNoteText.textContent = note.text;
-  }
-
-  function generateHusbandNote(daily = false) {
-    const pool = husbandNotePool();
-    if (!pool.length) return;
-    let note;
-
-    if (daily) {
-      note = pool[dateSeed() % pool.length];
-    } else {
-      const available = pool.length > 1 ? pool.filter(item => item.key !== lastHusbandNoteKey) : pool;
-      note = available[Math.floor(Math.random() * available.length)];
-    }
-    showHusbandNote(note);
-  }
-
-  async function copyHusbandNote() {
-    if (!currentHusbandNote) return toast("老公还没写好这封信");
-    const text = `${currentHusbandNote}\n\n——只写给安文青的老公`;
-    try {
-      await navigator.clipboard.writeText(text);
-      toast("这封信已经复制好了");
-    } catch {
-      const input = document.createElement("textarea");
-      input.value = text;
-      input.style.position = "fixed";
-      input.style.opacity = "0";
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand("copy");
-      input.remove();
-      toast("这封信已经复制好了");
-    }
-  }
-
-  function saveHusbandNoteToDiary() {
-    if (!currentHusbandNote) return toast("老公还没写好这封信");
-    const now = Date.now();
-    const category = els.husbandNoteCategory.textContent.replace("来信", "") || "随机";
-    const entry = {
-      id: crypto.randomUUID ? crypto.randomUUID() : `entry_${now}_${Math.random().toString(16).slice(2)}`,
-      date: todayISO(),
-      weather: "",
-      title: `老公的随机日记｜${category}`,
-      content: currentHusbandNote,
-      whisper: "",
-      tags: ["老公的随机日记", category, "写给青青"],
-      mood: category === "哄你" ? "平静 🌙" : category === "夸你" ? "幸福 🥰" : "想念 🫶",
-      photo: "",
-      favorite: false,
-      createdAt: now,
-      updatedAt: now
-    };
-    entries.push(entry);
-    if (!saveEntries()) return;
-    updateStats();
-    renderEntries();
-    toast("老公的这封信已经住进今天了");
-  }
-
-  function switchView(name) {
-    document.querySelectorAll(".view").forEach(v => {
-      v.classList.toggle("active", v.dataset.view === name);
-    });
-    document.querySelectorAll(".tabbar button").forEach(btn => {
-      btn.classList.toggle("active", btn.dataset.tab === name);
-    });
-    if (name === "timeline") renderEntries();
-  }
-
-  function saveCurrentEntry() {
-    const content = els.content.value.trim();
-    const title = els.title.value.trim();
-    const whisper = els.whisper.value.trim();
-
-    if (!content && !title && !whisper && !photoData) {
-      toast("至少留下一句话或一张照片吧");
-      return;
-    }
-
-    const now = Date.now();
-    const entry = {
-      id: editingId || (crypto.randomUUID ? crypto.randomUUID() : `entry_${now}_${Math.random().toString(16).slice(2)}`),
-      date: els.date.value || todayISO(),
-      weather: els.weather.value,
-      title,
-      content,
-      whisper,
-      tags: parseTags(els.tags.value),
-      mood: selectedMood,
-      photo: photoData,
-      favorite: editingId ? !!entries.find(e => e.id === editingId)?.favorite : false,
-      createdAt: editingId ? (entries.find(e => e.id === editingId)?.createdAt || now) : now,
-      updatedAt: now
-    };
-
-    if (editingId) {
-      entries = entries.map(e => e.id === editingId ? entry : e);
-    } else {
-      entries.push(entry);
-    }
-
-    if (!saveEntries()) return;
-    updateStats();
-    renderEntries();
-    const wasEditing = !!editingId;
-    resetForm();
-    toast(wasEditing ? "修改已经保存" : "今天已经被好好记住了");
-  }
-
-  function renderRandomMemory() {
-    if (!entries.length) {
-      toast("先写下一篇日记吧");
-      return;
-    }
-    const entry = entries[Math.floor(Math.random() * entries.length)];
-    const box = els.memoryBox;
-    box.replaceChildren();
-
-    const icon = document.createElement("div");
-    icon.style.fontSize = "28px";
-    icon.textContent = entry.mood ? entry.mood.split(" ").pop() : "💌";
-
-    const quote = document.createElement("div");
-    quote.className = "quote";
-    const source = entry.whisper || entry.content || entry.title || "这一天，我们认真存在过。";
-    quote.textContent = `“${source.length > 150 ? source.slice(0,150) + "……" : source}”`;
-
-    const date = document.createElement("div");
-    date.className = "tiny";
-    date.style.marginBottom = "14px";
-    date.textContent = formatDate(entry.date);
-
-    const btn = document.createElement("button");
-    btn.className = "soft-btn";
-    btn.type = "button";
-    btn.textContent = "再翻一篇";
-    btn.addEventListener("click", renderRandomMemory);
-
-    box.append(icon, quote, date, btn);
-  }
-
-  function downloadBlob(content, filename, type) {
-    const blob = new Blob([content], {type});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  function exportJson() {
-    const payload = {
-      app: "我们的每一天",
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      entries
-    };
-    downloadBlob(
-      JSON.stringify(payload, null, 2),
-      `我们的每一天_日记备份_${todayISO()}.json`,
-      "application/json;charset=utf-8"
-    );
-    toast("日记备份已导出");
-  }
-
-  function exportText() {
-    const sorted = [...entries].sort((a,b) => (a.date || "").localeCompare(b.date || ""));
-    const text = sorted.map(e => {
-      const lines = [
-        `【${formatDate(e.date)}】${e.title || "没有标题的一天"}`,
-        e.mood ? `心情：${e.mood}` : "",
-        e.weather ? `天气：${e.weather}` : "",
-        e.tags?.length ? `标签：${e.tags.map(t => "#" + t).join(" ")}` : "",
-        "",
-        e.content || "",
-        e.whisper ? `\n想对老公说：\n${e.whisper}` : "",
-        "\n" + "—".repeat(24)
-      ];
-      return lines.filter((line, index) => line !== "" || index >= 4).join("\n");
-    }).join("\n\n");
-
-    downloadBlob(
-      text || "还没有日记。",
-      `我们的每一天_纯文字_${todayISO()}.txt`,
-      "text/plain;charset=utf-8"
-    );
-    toast("纯文字版已导出");
-  }
-
-  function importJson(file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const parsed = JSON.parse(reader.result);
-        const imported = Array.isArray(parsed) ? parsed : parsed.entries;
-        if (!Array.isArray(imported)) throw new Error("格式不正确");
-
-        const normalized = imported
-          .filter(e => e && typeof e === "object")
-          .map(e => ({
-            id: String(e.id || `entry_${Date.now()}_${Math.random().toString(16).slice(2)}`),
-            date: String(e.date || todayISO()).slice(0,10),
-            weather: String(e.weather || ""),
-            title: String(e.title || "").slice(0,60),
-            content: String(e.content || "").slice(0,8000),
-            whisper: String(e.whisper || "").slice(0,1500),
-            tags: Array.isArray(e.tags) ? e.tags.map(String).slice(0,12) : [],
-            mood: String(e.mood || ""),
-            photo: typeof e.photo === "string" && e.photo.startsWith("data:image/") ? e.photo : "",
-            favorite: !!e.favorite,
-            createdAt: Number(e.createdAt || Date.now()),
-            updatedAt: Number(e.updatedAt || Date.now())
-          }));
-
-        const mode = confirm("点“确定”合并到现有日记；点“取消”则用备份完全覆盖现有日记。");
-        if (mode) {
-          const map = new Map(entries.map(e => [e.id, e]));
-          normalized.forEach(e => map.set(e.id, e));
-          entries = [...map.values()];
-        } else {
-          if (!confirm("确定完全覆盖吗？当前未备份的数据会消失。")) return;
-          entries = normalized;
-        }
-        if (!saveEntries()) return;
-        updateStats();
-        renderEntries();
-        resetForm();
-        toast(`已导入 ${normalized.length} 篇日记`);
-      } catch (err) {
-        toast("导入失败：不是有效的日记备份文件");
-      } finally {
-        els.importInput.value = "";
-      }
-    };
-    reader.readAsText(file, "utf-8");
-  }
-
-  function applyTheme(theme) {
-    document.documentElement.dataset.theme = theme;
-    localStorage.setItem(THEME_KEY, theme);
-    els.themeBtn.textContent = theme === "night" ? "☀" : "☾";
-  }
-
-  // Events
-  document.querySelectorAll(".tabbar button").forEach(btn => {
-    btn.addEventListener("click", () => switchView(btn.dataset.tab));
-  });
-
-  els.noteCategories.addEventListener("click", e => {
-    const btn = e.target.closest(".note-category");
-    if (!btn) return;
-    selectedHusbandCategory = btn.dataset.category;
-    els.noteCategories.querySelectorAll(".note-category").forEach(item => {
-      item.classList.toggle("active", item === btn);
-    });
-    generateHusbandNote(false);
-  });
-
-  els.generateHusbandNote.addEventListener("click", () => generateHusbandNote(false));
-  els.saveHusbandNote.addEventListener("click", saveHusbandNoteToDiary);
-  els.copyHusbandNote.addEventListener("click", copyHusbandNote);
-
-  els.moodGroup.addEventListener("click", e => {
-    const btn = e.target.closest(".mood-btn");
-    if (!btn) return;
-    setMood(selectedMood === btn.dataset.mood ? "" : btn.dataset.mood);
-  });
-
-  els.photoInput.addEventListener("change", async () => {
-    const file = els.photoInput.files?.[0];
-    if (!file) return;
-    try {
-      toast("正在压缩照片…");
-      photoData = await compressImage(file);
-      els.photoPreview.src = photoData;
-      els.photoPreview.style.display = "block";
-      els.removePhoto.classList.remove("hidden");
-      toast("照片已经放进今天");
-    } catch (err) {
-      toast(err.message || "照片处理失败");
-      els.photoInput.value = "";
-    }
-  });
-
-  els.removePhoto.addEventListener("click", () => {
-    photoData = "";
-    els.photoInput.value = "";
-    els.photoPreview.src = "";
-    els.photoPreview.style.display = "none";
-    els.removePhoto.classList.add("hidden");
-    toast("照片已移除");
-  });
-
-  els.saveBtn.addEventListener("click", saveCurrentEntry);
-  els.searchInput.addEventListener("input", renderEntries);
-  els.filterMood.addEventListener("change", renderEntries);
-  els.randomBtn.addEventListener("click", renderRandomMemory);
-  els.exportBtn.addEventListener("click", exportJson);
-  els.exportTextBtn.addEventListener("click", exportText);
-  els.importInput.addEventListener("change", () => {
-    const file = els.importInput.files?.[0];
-    if (file) importJson(file);
-  });
-  els.clearBtn.addEventListener("click", () => {
-    if (!entries.length) return toast("现在没有可以清空的日记");
-    const phrase = prompt("此操作会删除全部日记。请输入“全部清空”确认：");
-    if (phrase !== "全部清空") return toast("已取消");
-    entries = [];
-    saveEntries();
-    updateStats();
-    renderEntries();
-    resetForm();
-    toast("全部日记已清空");
-  });
-
-  els.themeBtn.addEventListener("click", () => {
-    applyTheme(document.documentElement.dataset.theme === "night" ? "day" : "night");
-  });
-
-  // Init
-  els.date.value = todayISO();
-  applyTheme(localStorage.getItem(THEME_KEY) || "day");
-  updateClock();
-  setInterval(updateClock, 1000);
-  updateStats();
-  renderEntries();
-  generateHusbandNote(true);
-})();
-</script>
+<script src="js/images.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/avatars.js"></script>
+<script src="js/diary.js"></script>
+<script src="js/backup.js"></script>
+<script src="js/decor.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>

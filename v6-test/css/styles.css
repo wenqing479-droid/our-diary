@@ -1671,3 +1671,40 @@ body.cloud-modal-open{overflow:hidden}
   .cloud-auth-actions,.cloud-sync-actions{grid-template-columns:1fr}.cloud-sync-actions .primary{grid-column:auto}.cloud-sync-overview{grid-template-columns:1fr}.cloud-history-item{align-items:flex-start;flex-direction:column}.cloud-history-item button{width:100%}
 }
 @media(prefers-reduced-motion:reduce){.cloud-status-dot[data-status="syncing"]{animation:none}}
+
+
+/* ===== V6.2：移动端表单宽度适配（修复 iPhone 日期框右侧被裁切） ===== */
+input, textarea, select{
+  display:block;
+  min-width:0;
+  max-width:100%;
+}
+.grid-2,
+.grid-2 > div{
+  min-width:0;
+  max-width:100%;
+}
+input[type="date"]{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  -webkit-min-logical-width:0;
+}
+@media(max-width:480px){
+  .grid-2{
+    width:100%;
+    min-width:0;
+  }
+  .grid-2 > div,
+  .grid-2 input,
+  .grid-2 select{
+    width:100%;
+    min-width:0;
+    max-width:100%;
+  }
+  input[type="date"]{
+    inline-size:100%;
+    min-inline-size:0;
+    max-inline-size:100%;
+  }
+}

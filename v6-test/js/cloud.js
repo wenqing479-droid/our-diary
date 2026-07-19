@@ -56,6 +56,8 @@
   let autoTimer = null;
   let recoveryMode = false;
   let handledUserId = "";
+  let remoteCheckTimer = null;
+  let lastRemoteCheckAt = 0;
 
   function makeDeviceId() {
     return crypto.randomUUID?.() || `device_${Date.now()}_${Math.random().toString(16).slice(2)}`;
@@ -153,6 +155,32 @@
 
   function hasContent(summary) {
     return summary.entries > 0 || summary.messages > 0 || summary.customAvatars > 0;
+  }
+
+  function comparableState(rawState) {
+    const state = rawState && typeof rawState === "object" ? rawState : {};
+    return {
+      entries: Array.isArray(state.entries) ? state.entries : [],
+      messages: Array.isArray(state.messages) ? state.messages : [],
+      avatars: state.avatars && typeof state.avatars === "object" ? state.avatars : {},
+      theme: state.theme === "night" ? "night" : "day"
+    };
+  }
+
+  function statesEqual(left, right) {
+    return JSON.stringify(comparableState(left)) === JSON.stringify(comparableState(right));
+  }
+
+  function localHasUnsyncedChanges() {
+    return Number(meta.dirtyAt || 0) > Number(meta.lastSyncAt || 0);
+  }
+
+  function remoteChangedSinceLastSync(row) {
+    return Boolean(
+      meta.lastCloudUpdatedAt &&
+      row?.updated_at &&
+      meta.lastCloudUpdatedAt !== row.updated_at
+    );
   }
 
   function localState() {
@@ -274,6 +302,25 @@
     updatePanel();
 
     try {
+      if (reason === "auto" && cloudRow?.state && meta.lastCloudUpdatedAt) {
+        const knownUpdatedAt = meta.lastCloudUpdatedAt;
+        const {data: latest, error: latestError} = await client
+          .from("senye_state")
+          .select("state,state_version,device_id,updated_at")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (latestError) throw latestError;
+        if (latest?.updated_at && latest.updated_at !== knownUpdatedAt) {
+          cloudRow = latest;
+          cloudReady = false;
+          setStatus("另一台设备有新内容，已暂停自动覆盖", "warn");
+          setNotice("检测到云端刚刚更新。请先安全合并，避免覆盖另一台设备的内容。", "warn");
+          openModal();
+          updatePanel();
+          return false;
+        }
+      }
+
       const nextState = localState();
       const previous = cloudRow?.state || null;
 
@@ -373,7 +420,8 @@
 
     try {
       const row = await fetchCloudRow();
-      const local = summaryOf(window.HomeApp?.getState?.() || {});
+      const currentLocalState = window.HomeApp?.getState?.() || {};
+      const local = summaryOf(currentLocalState);
       const remote = summaryOf(row?.state || {});
 
       if (!row?.state) {
@@ -388,12 +436,7 @@
       } else if (!hasContent(local) && hasContent(remote)) {
         setNotice("这台设备还没有内容，正在把云端小屋搬回来。", "info");
         await applyRemote("replace");
-      } else if (meta.lastCloudUpdatedAt && meta.lastCloudUpdatedAt === row.updated_at && meta.dirtyAt <= meta.lastSyncAt) {
-        cloudReady = true;
-        setStatus(`云端已同步 · ${formatTime(meta.lastSyncAt || row.updated_at)}`, "saved");
-        setNotice("本机与云端状态一致，自动同步已开启。", "success");
-      } else if (JSON.stringify(localState().entries) === JSON.stringify(row.state.entries || []) &&
-                 JSON.stringify(localState().messages) === JSON.stringify(row.state.messages || [])) {
+      } else if (statesEqual(currentLocalState, row.state)) {
         cloudReady = true;
         meta.lastCloudUpdatedAt = row.updated_at || "";
         meta.lastSyncAt = Date.now();
@@ -402,16 +445,79 @@
         setStatus("本机与云端内容一致", "saved");
         setNotice("内容已经一致，自动同步已开启。", "success");
       } else {
-        cloudReady = false;
-        setStatus("本机和云端都有内容，等待选择", "warn");
-        setNotice("检测到两边都有内容。推荐点“安全合并本机与云端”。", "warn");
-        openModal();
+        const localDirty = localHasUnsyncedChanges();
+        const knowsPreviousCloud = Boolean(meta.lastCloudUpdatedAt);
+        const remoteChanged = remoteChangedSinceLastSync(row);
+
+        if (knowsPreviousCloud && remoteChanged && !localDirty) {
+          setNotice("另一台设备有新内容，正在自动更新这台设备。", "info");
+          await applyRemote("replace");
+        } else if (knowsPreviousCloud && !remoteChanged && localDirty) {
+          cloudReady = true;
+          setNotice("发现本机有尚未上传的内容，正在继续同步。", "info");
+          await saveToCloud("auto");
+        } else if (meta.lastCloudUpdatedAt && meta.lastCloudUpdatedAt === row.updated_at && !localDirty) {
+          cloudReady = true;
+          setStatus(`云端已同步 · ${formatTime(meta.lastSyncAt || row.updated_at)}`, "saved");
+          setNotice("本机与云端状态一致，自动同步已开启。", "success");
+        } else {
+          cloudReady = false;
+          setStatus("本机和云端都有新内容，等待选择", "warn");
+          setNotice("两台设备都改过内容。请点“安全合并本机与云端”。", "warn");
+          openModal();
+        }
       }
     } catch (error) {
       setStatus("已登录，但暂时无法读取云端", "error");
       setNotice(`读取云端失败：${friendlyError(error)}`, "error");
     }
     updatePanel();
+  }
+
+  async function checkForRemoteUpdates() {
+    if (!user || !cloudReady || syncing || applyingRemote || document.hidden) return;
+    const now = Date.now();
+    if (now - lastRemoteCheckAt < 2500) return;
+    lastRemoteCheckAt = now;
+
+    try {
+      const row = await fetchCloudRow();
+      if (!row?.state) return;
+
+      const currentLocalState = window.HomeApp?.getState?.() || {};
+      if (statesEqual(currentLocalState, row.state)) {
+        meta.lastCloudUpdatedAt = row.updated_at || meta.lastCloudUpdatedAt;
+        meta.lastSyncAt = Math.max(meta.lastSyncAt || 0, Date.now());
+        meta.dirtyAt = 0;
+        saveMeta();
+        cloudReady = true;
+        updatePanel();
+        return;
+      }
+
+      const remoteChanged = remoteChangedSinceLastSync(row);
+      const localDirty = localHasUnsyncedChanges();
+
+      if (remoteChanged && !localDirty) {
+        setStatus("发现另一台设备的新内容，正在更新…", "syncing");
+        await applyRemote("replace");
+      } else if (remoteChanged && localDirty) {
+        cloudReady = false;
+        setStatus("两台设备都有新内容，等待安全合并", "warn");
+        setNotice("检测到两台设备都新增了内容，请点“安全合并本机与云端”。", "warn");
+        openModal();
+        updatePanel();
+      } else if (!remoteChanged && localDirty) {
+        scheduleAutoSync(500);
+      }
+    } catch (_) {
+      // 后台检查失败不打断本地使用，下一次聚焦页面时会继续尝试。
+    }
+  }
+
+  function scheduleRemoteCheck(delay = 350) {
+    clearTimeout(remoteCheckTimer);
+    remoteCheckTimer = setTimeout(checkForRemoteUpdates, delay);
   }
 
   async function listBackups() {
@@ -606,6 +712,10 @@
     window.addEventListener("offline", () => {
       setStatus("当前离线，内容先保存在本机", "local");
     });
+    window.addEventListener("focus", () => scheduleRemoteCheck(250));
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) scheduleRemoteCheck(250);
+    });
   }
 
   async function init() {
@@ -645,6 +755,7 @@
         cloudReady = false;
         handledUserId = "";
         clearTimeout(autoTimer);
+        clearTimeout(remoteCheckTimer);
         setStatus("已退出云端，本机内容仍然保留", "local");
         setNotice("已经安全退出云端账号。", "success");
       }

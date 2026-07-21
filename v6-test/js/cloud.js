@@ -3,7 +3,7 @@
 
   const SUPABASE_URL = "https://rhvdzxlsiucpmyvnpgnj.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jNE0IO0wrnOV1ysYpQzohg_ECMdRE_U";
-  const SITE_URL = "https://wenqing479-droid.github.io/our-diary/v6-test/";
+  const SITE_URL = "https://wenqing479-droid.github.io/our-diary/";
   const META_KEY = "senye_cloud_meta_v1";
   const AUTO_SYNC_DELAY = 4500;
 
@@ -88,7 +88,13 @@
   saveMeta();
 
   function saveMeta() {
-    localStorage.setItem(META_KEY, JSON.stringify(meta));
+    try {
+      localStorage.setItem(META_KEY, JSON.stringify(meta));
+      return true;
+    } catch (_) {
+      // 云端状态已经完成时，不让一个很小的本机元数据写入失败误报整次同步失败。
+      return false;
+    }
   }
 
   function openModal() {
@@ -183,8 +189,8 @@
     );
   }
 
-  function localState() {
-    const state = window.HomeApp?.getState?.() || {entries: [], messages: [], avatars: {}, theme: "day"};
+  function localState(overrideState = null) {
+    const state = overrideState || window.HomeApp?.getState?.() || {entries: [], messages: [], avatars: {}, theme: "day"};
     return {
       schema: "senye-cloud-state",
       version: 1,
@@ -231,7 +237,7 @@
     if (lower.includes("user already registered")) return "这个邮箱已经注册过了，可以直接登录";
     if (lower.includes("password should be at least")) return "密码至少需要 6 位";
     if (lower.includes("rate limit")) return "操作太频繁啦，稍等一会儿再试";
-    if (lower.includes("failed to fetch") || lower.includes("network")) return "网络连接失败，请检查网络后重试";
+    if (lower.includes("failed to fetch") || lower.includes("load failed") || lower.includes("network")) return "网络连接失败，请切换网络后重试";
     if (lower.includes("payload") || lower.includes("too large") || lower.includes("413")) {
       return "云端数据包太大，照片较多时需要升级为独立图片仓库。请先保留完整备份。";
     }
@@ -285,7 +291,7 @@
     saveMeta();
   }
 
-  async function saveToCloud(reason = "manual") {
+  async function saveToCloud(reason = "manual", overrideState = null) {
     if (!user) {
       openModal();
       setNotice("请先登录云端账号。", "warn");
@@ -302,6 +308,7 @@
     updatePanel();
 
     try {
+      await window.HomeApp?.ready;
       if (reason === "auto" && cloudRow?.state && meta.lastCloudUpdatedAt) {
         const knownUpdatedAt = meta.lastCloudUpdatedAt;
         const {data: latest, error: latestError} = await client
@@ -321,10 +328,10 @@
         }
       }
 
-      const nextState = localState();
+      const nextState = localState(overrideState);
       const previous = cloudRow?.state || null;
 
-      if (previous && (reason === "manual" || reason === "merge" || reason === "replace-local")) {
+      if (previous && (reason === "manual" || reason === "merge" || reason === "replace-local" || reason === "emergency")) {
         await createBackup(previous, `before_${reason}`);
       }
       await ensureDailyBackup(previous || nextState);
@@ -379,7 +386,7 @@
       }
 
       applyingRemote = true;
-      window.HomeApp.applyCloudState(row.state, mode);
+      await window.HomeApp.applyCloudState(row.state, mode);
       applyingRemote = false;
 
       meta.lastSyncAt = Date.now();
@@ -413,6 +420,7 @@
   }
 
   async function reconcileAfterLogin() {
+    await window.HomeApp?.ready;
     if (!user || handledUserId === user.id) return;
     handledUserId = user.id;
     setStatus("正在检查云端小屋…", "syncing");
@@ -457,9 +465,8 @@
           setNotice("发现本机有尚未上传的内容，正在继续同步。", "info");
           await saveToCloud("auto");
         } else if (meta.lastCloudUpdatedAt && meta.lastCloudUpdatedAt === row.updated_at && !localDirty) {
-          cloudReady = true;
-          setStatus(`云端已同步 · ${formatTime(meta.lastSyncAt || row.updated_at)}`, "saved");
-          setNotice("本机与云端状态一致，自动同步已开启。", "success");
+          setNotice("发现本机缓存与已保存的云端版本不一致，正在自动修复本机。", "info");
+          await applyRemote("replace");
         } else {
           cloudReady = false;
           setStatus("本机和云端都有新内容，等待选择", "warn");
@@ -475,6 +482,7 @@
   }
 
   async function checkForRemoteUpdates() {
+    await window.HomeApp?.ready;
     if (!user || !cloudReady || syncing || applyingRemote || document.hidden) return;
     const now = Date.now();
     if (now - lastRemoteCheckAt < 2500) return;
@@ -553,7 +561,7 @@
           if (!confirm("确定用这份历史备份覆盖当前本机内容吗？建议先导出一份完整备份。")) return;
           applyingRemote = true;
           try {
-            window.HomeApp.applyCloudState(item.state, "replace");
+            await window.HomeApp.applyCloudState(item.state, "replace");
             applyingRemote = false;
             cloudReady = true;
             setNotice("历史备份已恢复到本机。确认无误后可点“立即保存到云端”。", "success");
@@ -780,8 +788,18 @@
   window.HomeCloud = {
     open: openModal,
     save: () => saveToCloud("manual"),
+    saveEmergencyState: async state => {
+      if (!user) return false;
+      const saved = await saveToCloud("emergency", state);
+      if (saved) {
+        setStatus(`已直接保存到云端 · ${formatTime(Date.now())}`, "saved");
+        setNotice("本机存储异常，但当前内容已由云端安全接管。刷新前请确认云端数量。", "success");
+      }
+      return saved;
+    },
     restore: () => applyRemote("replace"),
     merge: () => applyRemote("merge"),
+    refreshPanel: updatePanel,
     isApplyingRemote: () => applyingRemote
   };
 

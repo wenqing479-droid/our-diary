@@ -35,7 +35,7 @@
 
     const dataUrl = await readFileAsDataURL(file);
     const img = await loadImage(dataUrl);
-    const maxSide = 1440;
+    const maxSide = 1280;
     let width = img.naturalWidth || img.width;
     let height = img.naturalHeight || img.height;
     const ratio = Math.min(1, maxSide / Math.max(width, height));
@@ -43,14 +43,33 @@
     height = Math.max(1, Math.round(height * ratio));
 
     const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d", {alpha: false});
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, width, height);
-    ctx.drawImage(img, 0, 0, width, height);
+    const draw = (targetWidth, targetHeight) => {
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+      const ctx = canvas.getContext("2d", {alpha: false});
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, targetWidth, targetHeight);
+      ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+    };
 
-    const compressed = canvas.toDataURL("image/jpeg", 0.78);
+    draw(width, height);
+    let quality = 0.72;
+    let compressed = canvas.toDataURL("image/jpeg", quality);
+    const targetBytes = 720 * 1024;
+
+    while (estimateDataUrlBytes(compressed) > targetBytes && quality > 0.52) {
+      quality = Math.max(0.52, quality - 0.08);
+      compressed = canvas.toDataURL("image/jpeg", quality);
+    }
+
+    if (estimateDataUrlBytes(compressed) > targetBytes && Math.max(width, height) > 960) {
+      const shrink = 960 / Math.max(width, height);
+      width = Math.max(1, Math.round(width * shrink));
+      height = Math.max(1, Math.round(height * shrink));
+      draw(width, height);
+      compressed = canvas.toDataURL("image/jpeg", 0.62);
+    }
+
     return {
       id: makeId(),
       data: compressed,

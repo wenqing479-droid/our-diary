@@ -3,6 +3,8 @@
 
   const THEME_KEY = "qingqing_laogong_diary_theme";
   let entries = HomeDiary.loadEntries();
+  let appReady = Promise.resolve();
+  let entrySaveBusy = false;
   let messages = HomeChat.loadMessages();
   let avatars = HomeAvatars.loadAvatars();
   let selectedMood = "";
@@ -166,13 +168,28 @@
     updateEntryDateDisplay();
   }
 
-  function saveEntries() {
+  async function saveEntries(nextEntries = entries, options = {}) {
+    const normalized = HomeDiary.normalizeEntries(nextEntries);
     try {
-      entries = HomeDiary.saveEntries(entries);
+      entries = await HomeDiary.saveEntries(normalized);
       document.dispatchEvent(new CustomEvent("senye:local-change", {detail: {kind: "entries"}}));
       return true;
     } catch (err) {
-      toast("保存失败：浏览器空间可能不足，请先导出备份或删除部分照片");
+      const allowCloudFallback = options.allowCloudFallback !== false;
+      if (allowCloudFallback && window.HomeCloud?.saveEmergencyState) {
+        try {
+          const emergencyState = {...getAppState(), entries: normalized};
+          const cloudSaved = await window.HomeCloud.saveEmergencyState(emergencyState);
+          if (cloudSaved) {
+            entries = normalized;
+            toast("本机存储异常，但这次内容已经直接保存到云端");
+            return true;
+          }
+        } catch (_) {
+          // 云端兜底失败后，继续显示明确的本机保存错误。
+        }
+      }
+      toast(`保存失败：${err?.message || "本机存储暂时不可用"}。编辑框内容没有清空`);
       return false;
     }
   }
@@ -517,15 +534,19 @@
     filtered.forEach(entry => els.entryList.appendChild(createEntryCard(entry)));
   }
 
-  function toggleFavorite(id) {
+  async function toggleFavorite(id) {
     const entry = entries.find(e => e.id === id);
     if (!entry) return;
-    entry.favorite = !entry.favorite;
-    entry.updatedAt = Date.now();
-    saveEntries();
+    const nextFavorite = !entry.favorite;
+    const nextEntries = entries.map(item => item.id === id ? {
+      ...item,
+      favorite: nextFavorite,
+      updatedAt: Date.now()
+    } : item);
+    if (!await saveEntries(nextEntries)) return;
     renderEntries();
     updateStats();
-    toast(entry.favorite ? "已加入珍藏" : "已取消珍藏");
+    toast(nextFavorite ? "已加入珍藏" : "已取消珍藏");
   }
 
   function editEntry(id) {
@@ -548,12 +569,12 @@
     toast("已载入旧日记");
   }
 
-  function deleteEntry(id) {
+  async function deleteEntry(id) {
     const entry = entries.find(e => e.id === id);
     if (!entry) return;
     if (!confirm(`确定删除“${entry.title || "没有标题的一天"}”吗？此操作无法撤销。`)) return;
-    entries = entries.filter(e => e.id !== id);
-    saveEntries();
+    const nextEntries = entries.filter(e => e.id !== id);
+    if (!await saveEntries(nextEntries)) return;
     renderEntries();
     updateStats();
     if (editingId === id) resetForm();
@@ -856,7 +877,7 @@
     }
   }
 
-  function saveHusbandNoteToDiary() {
+  async function saveHusbandNoteToDiary() {
     if (!currentHusbandNote) return toast("老公还没写好这封信");
     const now = Date.now();
     const category = els.husbandNoteCategory.textContent.replace("来信", "") || "随机";
@@ -874,8 +895,7 @@
       createdAt: now,
       updatedAt: now
     };
-    entries.push(entry);
-    if (!saveEntries()) return;
+    if (!await saveEntries([...entries, entry])) return;
     updateStats();
     renderEntries();
     toast("老公的这封信已经住进今天了");
@@ -892,7 +912,9 @@
     if (name === "husband") renderChatMessages(true);
   }
 
-  function saveCurrentEntry() {
+  async function saveCurrentEntry() {
+    if (entrySaveBusy) return;
+
     const content = els.content.value.trim();
     const title = els.title.value.trim();
     const whisper = els.whisper.value.trim();
@@ -902,34 +924,46 @@
       return;
     }
 
-    const now = Date.now();
-    const entry = {
-      id: editingId || (crypto.randomUUID ? crypto.randomUUID() : `entry_${now}_${Math.random().toString(16).slice(2)}`),
-      date: els.date.value || todayISO(),
-      weather: els.weather.value,
-      title,
-      content,
-      whisper,
-      tags: parseTags(els.tags.value),
-      mood: selectedMood,
-      photos: HomeImages.clonePhotos(photosData),
-      favorite: editingId ? !!entries.find(e => e.id === editingId)?.favorite : false,
-      createdAt: editingId ? (entries.find(e => e.id === editingId)?.createdAt || now) : now,
-      updatedAt: now
-    };
+    entrySaveBusy = true;
+    const originalButtonText = els.saveBtn.textContent;
+    els.saveBtn.disabled = true;
+    els.saveBtn.textContent = "正在安全保存…";
 
-    if (editingId) {
-      entries = entries.map(e => e.id === editingId ? entry : e);
-    } else {
-      entries.push(entry);
+    try {
+      await appReady;
+      const now = Date.now();
+      const currentEditingEntry = editingId ? entries.find(e => e.id === editingId) : null;
+      const entry = {
+        id: editingId || (crypto.randomUUID ? crypto.randomUUID() : `entry_${now}_${Math.random().toString(16).slice(2)}`),
+        date: els.date.value || todayISO(),
+        weather: els.weather.value,
+        title,
+        content,
+        whisper,
+        tags: parseTags(els.tags.value),
+        mood: selectedMood,
+        photos: HomeImages.clonePhotos(photosData),
+        favorite: currentEditingEntry ? !!currentEditingEntry.favorite : false,
+        createdAt: currentEditingEntry?.createdAt || now,
+        updatedAt: now
+      };
+
+      const nextEntries = editingId
+        ? entries.map(e => e.id === editingId ? entry : e)
+        : [...entries, entry];
+
+      if (!await saveEntries(nextEntries)) return;
+      updateStats();
+      renderEntries();
+      const wasEditing = !!editingId;
+      resetForm();
+      toast(wasEditing ? "修改已经保存" : "今天已经被好好记住了");
+    } finally {
+      entrySaveBusy = false;
+      els.saveBtn.disabled = false;
+      if (editingId) els.saveBtn.textContent = "保存修改";
+      else if (els.saveBtn.textContent === "正在安全保存…") els.saveBtn.textContent = originalButtonText || "保存这一天";
     }
-
-    if (!saveEntries()) return;
-    updateStats();
-    renderEntries();
-    const wasEditing = !!editingId;
-    resetForm();
-    toast(wasEditing ? "修改已经保存" : "今天已经被好好记住了");
   }
 
   function renderRandomMemory() {
@@ -976,7 +1010,8 @@
     URL.revokeObjectURL(url);
   }
 
-  function exportJson() {
+  async function exportJson() {
+    await appReady;
     const payload = HomeBackup.buildPayload(entries, messages, avatars);
     const json = JSON.stringify(payload, null, 2);
     const message = [
@@ -994,7 +1029,7 @@
     toast(`已导出 ${payload.summary.entries} 篇日记、${payload.summary.photos} 张图片、${payload.summary.messages} 条对话和 ${payload.summary.customAvatars} 张自定义头像`);
   }
 
-  function exportText() {
+  async function exportText() {
     const sorted = [...entries].sort((a,b) => (a.date || "").localeCompare(b.date || ""));
     const text = sorted.map(e => {
       const lines = [
@@ -1029,7 +1064,7 @@
 
   function importJson(file) {
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       try {
         const backup = HomeBackup.parseBackup(String(reader.result || ""));
         const beforeEntries = entries.length;
@@ -1052,18 +1087,24 @@
         ].join("\n");
 
         const merge = confirm(message);
+        let nextEntries;
+        let nextMessages = messages;
+        let nextAvatars = avatars;
         if (merge) {
-          entries = HomeDiary.mergeEntries(entries, backup.entries);
-          if (backup.hasMessages) messages = HomeChat.mergeMessages(messages, backup.messages);
-          if (backup.hasAvatars) avatars = HomeAvatars.mergeStates(avatars, backup.avatars);
+          nextEntries = HomeDiary.mergeEntries(entries, backup.entries);
+          if (backup.hasMessages) nextMessages = HomeChat.mergeMessages(messages, backup.messages);
+          if (backup.hasAvatars) nextAvatars = HomeAvatars.mergeStates(avatars, backup.avatars);
         } else {
           if (!confirm("是否用这份备份完全覆盖现有日记？当前未导出的内容会被替换。")) return;
-          entries = HomeDiary.normalizeEntries(backup.entries);
-          if (backup.hasMessages) messages = HomeChat.normalizeMessages(backup.messages);
-          if (backup.hasAvatars) avatars = HomeAvatars.normalizeState(backup.avatars);
+          nextEntries = HomeDiary.normalizeEntries(backup.entries);
+          if (backup.hasMessages) nextMessages = HomeChat.normalizeMessages(backup.messages);
+          if (backup.hasAvatars) nextAvatars = HomeAvatars.normalizeState(backup.avatars);
         }
 
-        if (!saveEntries() || !saveMessages() || !saveAvatars()) return;
+        if (!await saveEntries(nextEntries)) return;
+        messages = nextMessages;
+        avatars = nextAvatars;
+        if (!saveMessages() || !saveAvatars()) return;
         const afterEntries = entries.length;
         const afterPhotos = HomeDiary.countPhotos(entries);
         const afterMessages = messages.length;
@@ -1105,7 +1146,11 @@
 
   function applyTheme(theme) {
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem(THEME_KEY, theme);
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch (_) {
+      // 日记迁移完成前即使浏览器旧空间已满，也不能让主题写入阻断整个页面。
+    }
     els.themeBtn.textContent = theme === "night" ? "☀" : "☾";
   }
 
@@ -1127,20 +1172,25 @@
     };
   }
 
-  function applyCloudState(rawState, mode = "replace") {
+  async function applyCloudState(rawState, mode = "replace") {
+    await appReady;
     const state = rawState && typeof rawState === "object" ? rawState : {};
-    if (mode === "merge") {
-      entries = HomeDiary.mergeEntries(entries, state.entries || []);
-      messages = HomeChat.mergeMessages(messages, state.messages || []);
-      avatars = HomeAvatars.mergeStates(avatars, state.avatars || {});
-    } else {
-      entries = HomeDiary.normalizeEntries(state.entries || []);
-      messages = HomeChat.normalizeMessages(state.messages || []);
-      avatars = HomeAvatars.normalizeState(state.avatars || {});
-    }
+    const nextEntries = mode === "merge"
+      ? HomeDiary.mergeEntries(entries, state.entries || [])
+      : HomeDiary.normalizeEntries(state.entries || []);
+    const nextMessages = mode === "merge"
+      ? HomeChat.mergeMessages(messages, state.messages || [])
+      : HomeChat.normalizeMessages(state.messages || []);
+    const nextAvatars = mode === "merge"
+      ? HomeAvatars.mergeStates(avatars, state.avatars || {})
+      : HomeAvatars.normalizeState(state.avatars || {});
 
-    if (!saveEntries() || !saveMessages() || !saveAvatars()) {
-      throw new Error("本机浏览器空间不足，云端内容未能完整写入");
+    try {
+      entries = await HomeDiary.saveEntries(nextEntries);
+      messages = HomeChat.saveMessages(nextMessages);
+      avatars = HomeAvatars.saveAvatars(nextAvatars);
+    } catch (error) {
+      throw new Error(`本机大容量存储写入失败：${error?.message || "操作失败"}`);
     }
 
     if (state.theme === "day" || state.theme === "night") applyTheme(state.theme);
@@ -1154,6 +1204,7 @@
   }
 
   window.HomeApp = {
+    get ready() { return appReady; },
     getState: getAppState,
     getSummary: getAppSummary,
     applyCloudState,
@@ -1324,16 +1375,14 @@
     const file = els.importInput.files?.[0];
     if (file) importJson(file);
   });
-  els.clearBtn.addEventListener("click", () => {
+  els.clearBtn.addEventListener("click", async () => {
     if (!entries.length && !messages.length && !HomeAvatars.countCustom(avatars)) return toast("现在没有可以清空的数据");
     const phrase = prompt("此操作会删除全部日记、情侣对话和自定义头像。请输入“全部清空”确认：");
     if (phrase !== "全部清空") return toast("已取消");
-    entries = [];
+    if (!await saveEntries([])) return;
     messages = [];
     avatars = HomeAvatars.normalizeState({});
-    saveEntries();
-    saveMessages();
-    saveAvatars();
+    if (!saveMessages() || !saveAvatars()) return;
     updateStats();
     renderEntries();
     applyAvatarImages();
@@ -1359,7 +1408,24 @@
   applyTheme(localStorage.getItem(THEME_KEY) || "day");
   updateClock();
   setInterval(updateClock, 1000);
-  updateStats();
-  renderEntries();
-  generateHusbandNote(true);
+  els.resultText.textContent = "正在安全读取日记…";
+
+  appReady = (async () => {
+    try { await navigator.storage?.persist?.(); } catch (_) {}
+    return HomeDiary.initialize(entries);
+  })().then(hydratedEntries => {
+    entries = hydratedEntries;
+    updateStats();
+    renderEntries();
+    generateHusbandNote(true);
+    document.dispatchEvent(new CustomEvent("senye:app-ready"));
+    return true;
+  }).catch(error => {
+    updateStats();
+    renderEntries();
+    generateHusbandNote(true);
+    toast(`本机大容量存储初始化失败：${error?.message || "请稍后重试"}`);
+    document.dispatchEvent(new CustomEvent("senye:app-ready"));
+    return false;
+  });
 })();
